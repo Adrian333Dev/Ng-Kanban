@@ -1,3 +1,4 @@
+import { filter, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
@@ -18,6 +19,19 @@ export class UserService {
 
   public list() {
     return this.http.get<IUserList>(this.apiUrl + 'list/');
+  }
+
+  public getCurrentUser() {
+    // find the current user in the list of users by username or email
+    return this.list().pipe(
+      map((users) => {
+        const currentUser = users.list.find(
+          (user) => user.username === localStorage.getItem('username')
+        );
+        return currentUser;
+      }
+      )
+    );
   }
 
   public get(id: number) {

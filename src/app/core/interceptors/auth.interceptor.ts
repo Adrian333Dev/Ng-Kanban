@@ -20,6 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     const accessToken = this.authService.getAccessToken();
+    console.log('Access token: ', accessToken);
     if (accessToken) return this.handleRequest(request, next, accessToken);
     return next.handle(request);
   }
