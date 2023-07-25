@@ -33,7 +33,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutModule } from '@angular/cdk/layout';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDropList,
+  CdkDropListGroup,
+  DragDropModule,
+} from '@angular/cdk/drag-drop';
 
 const materialModules = [
   CdkTreeModule,
@@ -70,6 +75,9 @@ const materialModules = [
   MatTooltipModule,
   LayoutModule,
   DragDropModule,
+  CdkDropListGroup,
+  CdkDropList,
+  CdkDrag,
 ];
 
 @NgModule({

@@ -6,8 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { MaterialModule } from './material.module';
 import { InputComponent } from './components/input/input.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
-const components = [InputComponent];
+const components = [InputComponent, NavbarComponent];
 
 @NgModule({
   declarations: [...components],

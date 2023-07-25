@@ -26,9 +26,8 @@ $tailwind-rose: (
   ),
 );
 
-$primary: mat.define-palette($tailwind-rose, 500, 300, 700);
-$accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-
+$primary: mat.define-palette(mat.$indigo-palette);
+$accent: mat.define-palette(mat.$gray-palette);
 $warn: mat.define-palette(mat.$red-palette);
 $light-theme: mat.define-light-theme(
   (
@@ -99,16 +98,9 @@ body {
   }
 }
 
-::ng-deep .mat-form-field-flex > .mat-form-field-infix {
-  padding: 0.4em 0px !important;
-}
-::ng-deep .mat-form-field-label-wrapper {
-  top: -1.5em !important;
-}
-
-::ng-deep
-  .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
-  .mat-form-field-label {
-  transform: translateY(-1.1em) scale(0.75);
-  width: 133.33333%;
+mat-error {
+  font-size: 11px;
+  transition-property: transform;
+  transition-delay: 3s;
+  transform: translateY(-3px);
 }

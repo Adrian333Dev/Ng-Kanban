@@ -6,6 +6,6 @@ export const loginGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isLoggedIn()) router.navigate(['kanban']);
+  if (authService.isLoggedIn()) router.navigate(['board']);
   return !authService.isLoggedIn();
 };

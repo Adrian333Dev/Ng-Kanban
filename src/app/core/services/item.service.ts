@@ -6,7 +6,7 @@ import {
   IItemList,
   CreateItem,
   UpdateItem,
-} from 'src/app/kanban/models/item.types';
+} from 'src/app/board/models/item.types';
 
 @Injectable({
   providedIn: 'root',

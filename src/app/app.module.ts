@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { BoardModule } from './board/board.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +18,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     BrowserAnimationsModule,
     UserModule,
     AuthModule,
+    BoardModule,
   ],
   providers: [
     {

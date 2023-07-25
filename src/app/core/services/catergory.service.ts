@@ -6,7 +6,7 @@ import {
   ICategory,
   ICategoryList,
   UpdateCategory,
-} from 'src/app/kanban/models/category.types';
+} from 'src/app/board/models/category.types';
 
 @Injectable({
   providedIn: 'root',
