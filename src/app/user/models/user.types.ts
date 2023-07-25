@@ -6,3 +6,10 @@ export interface IUser {
   email: string;
   password: string;
 }
+
+export interface IUserList {
+  list: IUser[];
+}
+
+export type CreateUser = Omit<IUser, 'id'>;
+export type UpdateUser = Partial<CreateUser>;

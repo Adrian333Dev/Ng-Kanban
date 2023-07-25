@@ -1,53 +1,73 @@
+import { UserService } from './user.service';
 import { Observable } from 'rxjs';
 
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from 'environments/environment';
 import { ITokens } from 'src/app/auth/models/tokens.interface';
-import {
-  LoginBody,
-  RegisterBody,
-} from 'src/app/auth/models/request-body.types';
-import { AuthInterceptor } from '../interceptors/auth.interceptor';
+import { LoginBody } from 'src/app/auth/models/request-body.types';
+import { CreateUser } from 'src/app/user/models/user.types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly apiUrl = environment.url;
-  isLoggedIn(): boolean {
-    const loggedIn = false;
-    if (loggedIn) {
-      console.log('logged in');
-      return true;
-    }
-    console.log('not logged in');
-    return false;
-  }
-
-  // /api/auth/token/get/
-  // /api/auth/token/refresh/
-  // /api/user/create/
+  private readonly apiUrl = environment.url + 'auth/';
 
   login(body: LoginBody): Observable<ITokens> {
     return this.http
-      .post<ITokens>(`${this.apiUrl}auth/token/get/`, body, {
-        withCredentials: true,
+      .post<ITokens>(`${this.apiUrl}token/get/`, body)
+      .pipe(tap({ next: (tokens) => this.setTokens(tokens) }));
+  }
+
+  refreshToken(): Observable<ITokens> {
+    return this.http
+      .post<ITokens>(`${this.apiUrl}token/refresh/`, {
+        refresh: this.getRefreshToken(),
       })
-      .pipe(
-        tap(({ access_token }) => (AuthInterceptor.accessToken = access_token))
-      );
+      .pipe(tap({ next: (tokens) => this.setTokens(tokens) }));
   }
 
-  register(body: RegisterBody): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(
-      `${this.apiUrl}user/create/`,
-      body
-    );
+  register(body: CreateUser): Observable<{ message: string }> {
+    return this.userService.create(body);
   }
 
-  constructor(private http: HttpClient, private router: Router) {}
+  logout(): void {
+    this.setTokens({ access_token: '', refresh_token: '' });
+    this.router.navigate(['/login']);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getAccessToken();
+  }
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private userService: UserService
+  ) {}
+
+  // Helpers
+
+  public getAccessToken(): string {
+    return localStorage.getItem('access_token') || '';
+  }
+
+  public getRefreshToken(): string {
+    return localStorage.getItem('refresh_token') || '';
+  }
+
+  public setTokens({ access_token, refresh_token }: ITokens): void {
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('refresh_token', refresh_token);
+  }
+
+  public getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${this.getAccessToken()}`,
+    });
+  }
 }
