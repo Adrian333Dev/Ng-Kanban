@@ -1,1 +1,114 @@
-/* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
+@include mat.core();
+
+$tailwind-rose: (
+  50: #fff1f2,
+  100: #ffe4e6,
+  200: #fecdd3,
+  300: #fda4af,
+  400: #fb7185,
+  500: #f43f5e,
+  600: #e11d48,
+  700: #be123c,
+  800: #9f1239,
+  900: #881337,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  ),
+);
+
+$primary: mat.define-palette($tailwind-rose, 500, 300, 700);
+$accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+$warn: mat.define-palette(mat.$red-palette);
+$light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn,
+    ),
+  )
+);
+
+$dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($light-theme);
+
+html,
+body {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #e2e2e2;
+}
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: 100%;
+  gap: 1rem;
+  text-align: center;
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+
+    .login-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    mat-card-header {
+      text-align: center;
+      display: inline-block;
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}
+
+::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+  padding: 0.4em 0px !important;
+}
+::ng-deep .mat-form-field-label-wrapper {
+  top: -1.5em !important;
+}
+
+::ng-deep
+  .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+  .mat-form-field-label {
+  transform: translateY(-1.1em) scale(0.75);
+  width: 133.33333%;
+}
