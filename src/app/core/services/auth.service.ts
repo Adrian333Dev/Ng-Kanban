@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.setTokens({ access_token: '', refresh_token: '' });
+    this.setTokens({ access: '', refresh: '' });
     this.router.navigate(['/login']);
   }
 
@@ -60,9 +60,9 @@ export class AuthService {
     return localStorage.getItem('refresh_token') || '';
   }
 
-  public setTokens({ access_token, refresh_token }: ITokens): void {
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
+  public setTokens({ access, refresh }: ITokens): void {
+    localStorage.setItem('access_token', access);
+    localStorage.setItem('refresh_token', refresh);
   }
 
   public getAuthHeaders(): HttpHeaders {

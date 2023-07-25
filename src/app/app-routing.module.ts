@@ -23,6 +23,11 @@ const routes: Routes = [
     canActivate: [loginGuard],
     component: RegisterComponent,
   },
+  {
+    path: 'user',
+    canActivate: [authGuard],
+    loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
+  },
   { path: '', redirectTo: 'kanban', pathMatch: 'full' },
   { path: '**', redirectTo: 'kanban' },
 ];
