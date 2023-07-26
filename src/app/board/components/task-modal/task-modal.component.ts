@@ -1,14 +1,16 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { IItem } from '../../models/item.types';
 import { ICategory } from '../../models/category.types';
+import { TaskModalMode } from 'src/app/shared/models/maps/modal-modes.map';
 
 interface DialogData {
   item: IItem;
   header: string;
   categories: ICategory[];
+  mode: TaskModalMode;
 }
 
 @Component({
@@ -25,22 +27,41 @@ export class TaskModalComponent {
     text: 'category_title',
   } as any;
 
+  public get mode() {
+    return this.data.mode;
+  }
+
+  public get header() {
+    return this.data.header;
+  }
+
+  public get task() {
+    return this.data.item ?? ({} as IItem);
+  }
+
+  public get category_title() {
+    return this.categories.find(
+      (category) => category.id === this.form.value.category_id
+    )?.category_title;
+  }
+
   constructor(
     public dialogRef: MatDialogRef<TaskModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: FormBuilder
   ) {}
-  onCancel(): void {
-    this.dialogRef.close();
-  }
 
-  onSubmit(): void {
+  submit(): void {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value);
       this.form.reset();
     } else {
       this.form.markAllAsTouched();
     }
+  }
+
+  cancel(): void {
+    this.dialogRef.close();
   }
   ngOnInit() {
     this.categories = this.data.categories ?? [];

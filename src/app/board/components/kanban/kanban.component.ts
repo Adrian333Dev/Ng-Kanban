@@ -18,6 +18,7 @@ import { TaskModalComponent } from '../task-modal/task-modal.component';
 import { ICategory } from '../../models/category.types';
 import { ItemService } from 'src/app/core/services/item.service';
 import { PromptModalComponent } from 'src/app/shared/components/prompt-modal/prompt-modal.component';
+import { menuItems } from '../../constants';
 
 @Component({
   selector: 'app-kanban',
@@ -31,10 +32,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
   public categoryForm: FormGroup;
   public creatingCategory = false;
 
-  public menuItems: IDotMenuItem[] = [
-    { label: 'Edit', icon: 'edit', action: 'update' },
-    { label: 'Delete', icon: 'delete', action: 'delete' },
-  ];
+  public menuItems = menuItems;
 
   constructor(
     private fb: FormBuilder,
@@ -149,7 +147,6 @@ export class KanbanComponent implements OnInit, OnDestroy {
     const taskDialogRef = this.dialog.open(TaskModalComponent, dialogConfig);
 
     taskDialogRef.afterClosed().subscribe((res) => {
-      // console.log(res, action, item);
       if (res) {
         switch (action) {
           case 'create':

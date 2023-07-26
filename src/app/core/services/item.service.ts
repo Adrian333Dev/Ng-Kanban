@@ -28,7 +28,7 @@ export class ItemService {
       );
   }
 
-  public get(id: number) {
+  public get(id: string) {
     return this.http.get<IItem>(this.apiUrl + `get/${id}/`);
   }
 
@@ -36,14 +36,14 @@ export class ItemService {
     return this.http.post<{ message: string }>(this.apiUrl + 'create/', body);
   }
 
-  public update(id: number, body: UpdateItem) {
+  public update(id: string, body: UpdateItem) {
     return this.http.put<{ message: string }>(
       this.apiUrl + `update/${id}/`,
       body
     );
   }
 
-  public delete(id: number) {
+  public delete(id: string) {
     return this.http.delete<{ message?: string; detail?: string }>(
       this.apiUrl + `delete/${id}/`
     );

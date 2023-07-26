@@ -1,11 +1,11 @@
-<div class="task-card">
+<div class="task-card" (dblclick)="handleView()">
   <div class="task-card__header">
     <div class="task-card__title">
       {{ task.item_title }}
     </div>
-    <app-dot-menu [menuItems]='[]'></app-dot-menu>
+    <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onMenuItemClick($event)"></app-dot-menu>
   </div>
-  <div class="task-card__content">
+  <div class="task-card__content" *ngIf="task.item_description">
     {{ task.item_description }}
   </div>
 </div>

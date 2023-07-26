@@ -6,7 +6,8 @@
       <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onCategoryMenuItemClick($event, column.id)"></app-dot-menu>
       <div class="kanban-cards" cdkDropList [cdkDropListData]="column.tasks"
         (cdkDropListDropped)="onCardDrop($event, column.tasks)">
-        <app-task-card *ngFor="let card of column.tasks" [task]="card" cdkDrag [cdkDragData]="card"></app-task-card>
+        <app-task-card *ngFor="let card of column.tasks" [task]="card" cdkDrag [cdkDragData]="card"
+          [categories]="categories.value"></app-task-card>
       </div>
       <div class="actions">
         <button mat-mini-fab class="add_task-btn" (click)="openTaskDialog('create', column.id)">

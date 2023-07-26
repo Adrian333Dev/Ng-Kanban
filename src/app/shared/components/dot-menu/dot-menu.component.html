@@ -1,4 +1,4 @@
-<button mat-icon-button [matMenuTriggerFor]="menu" class="dot-menu">
+<button (click)="$event.stopPropagation()" mat-icon-button [matMenuTriggerFor]="menu" class="dot-menu">
   <mat-icon>more_vert</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
