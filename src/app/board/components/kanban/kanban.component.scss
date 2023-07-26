@@ -12,7 +12,7 @@
 }
 
 .kanban-column {
-  min-width: 300px;
+  width: 300px;
   padding: 16px;
   background-color: #f0f0f0;
   border-radius: 4px;
@@ -26,14 +26,7 @@
   background-color: #fff;
   border-radius: 4px;
   padding: 8px;
-}
-
-.kanban-card {
-  margin-bottom: 8px;
-  padding: 8px;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 120px);
 }
 
 .category-form {
@@ -54,21 +47,9 @@
 
 app-dot-menu {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 5px;
+  right: 3px;
   z-index: 1;
-}
-
-#logout-button {
-  color: white;
-  background-color: #16163f;
-  border: 1px solid black;
-}
-
-#delete-product-button {
-  color: white;
-  background-color: #145214;
-  border: 1px solid black;
 }
 
 .kanban-column {
