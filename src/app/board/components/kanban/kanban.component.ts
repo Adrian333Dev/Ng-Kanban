@@ -134,11 +134,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
         switch (action) {
           case 'create':
             this.itemService.create(res).subscribe((res) => {
-              for (let i = 0; i < this.columns.value.length; i++)
-                if (this.columns.value[i].id === item) {
-                  this.columns.value[i].tasks.push(res as Partial<IItem>);
-                  break;
-                }
+              this.boardService.init();
             });
             break;
           case 'update':
