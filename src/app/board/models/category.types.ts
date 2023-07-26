@@ -11,9 +11,7 @@ export interface ICategory {
 
 export interface ICategoryList {
   message: string;
-  categories: {
-    [key: string]: ICategory;
-  };
+  categories: ICategory[];
 }
 
 export type CreateCategory = Pick<ICategory, 'name' | 'category_title'>;

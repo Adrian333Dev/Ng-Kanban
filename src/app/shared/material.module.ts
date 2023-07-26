@@ -39,6 +39,7 @@ import {
   CdkDropListGroup,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const materialModules = [
   CdkTreeModule,
@@ -78,6 +79,7 @@ const materialModules = [
   CdkDropListGroup,
   CdkDropList,
   CdkDrag,
+  MatDialogModule,
 ];
 
 @NgModule({

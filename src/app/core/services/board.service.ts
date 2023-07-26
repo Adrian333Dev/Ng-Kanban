@@ -22,12 +22,8 @@ export class BoardService {
 
   public init() {
     combineLatest([
-      this.categoryService
-        .list()
-        .pipe(map(({ categories }) => Object.values(categories ?? {}))),
-      this.itemService
-        .list()
-        .pipe(map(({ items }) => Object.values(items ?? {}))),
+      this.categoryService.list().pipe(map(({ categories }) => categories)),
+      this.itemService.list().pipe(map(({ items }) => items)),
     ]).subscribe(([categories, items]) => {
       if (!categories.length) return;
       const columnsMap = categories.reduce((acc, category) => {
@@ -36,8 +32,8 @@ export class BoardService {
       }, {});
       if (items.length)
         items.forEach((item) => {
-          if (columnsMap[item.category.id])
-            columnsMap[item.category.id].items.push(item);
+          if (columnsMap[item.category_id])
+            columnsMap[item.category_id].items.push(item);
         });
       const columns = Object.values(columnsMap) as IColumn[];
       this.columns.next(columns);

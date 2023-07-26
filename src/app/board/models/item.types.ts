@@ -8,8 +8,8 @@ export interface IItem {
   item_description: string;
   order_id: string;
   created_date: string | Date;
-  owner: IUser;
-  category: ICategory;
+  owner_id: string;
+  category_id: string;
 }
 
 export interface IItemList {

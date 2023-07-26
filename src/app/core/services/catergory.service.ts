@@ -1,3 +1,5 @@
+import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
@@ -13,11 +15,26 @@ import {
 })
 export class CatergoryService {
   private readonly apiUrl = environment.url + 'category/';
+  private categories = new BehaviorSubject<ICategory[]>([]);
 
   constructor(private http: HttpClient) {}
 
+  public onCategoriesChange() {
+    return this.categories.asObservable();
+  }
+
+  public setCategories(categories: ICategory[]) {
+    this.categories.next(categories);
+  }
+
   public list() {
-    return this.http.get<ICategoryList>(this.apiUrl + 'list/');
+    return this.http.get<ICategoryList>(this.apiUrl + 'list/').pipe(
+      map(({ categories, ...rest }) => {
+        const categoriesList = Object.values(categories ?? {});
+        this.setCategories(categoriesList);
+        return { categories: categoriesList, ...rest };
+      })
+    );
   }
 
   public get(id: number) {

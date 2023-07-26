@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
@@ -17,7 +18,14 @@ export class ItemService {
   constructor(private http: HttpClient) {}
 
   public list() {
-    return this.http.get<IItemList>(this.apiUrl + 'list/');
+    return this.http
+      .get<IItemList>(this.apiUrl + 'list/')
+      .pipe(
+        map(({ items, ...rest }) => ({
+          items: Object.values(items ?? {}),
+          ...rest,
+        }))
+      );
   }
 
   public get(id: number) {

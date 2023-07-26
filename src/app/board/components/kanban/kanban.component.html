@@ -1,4 +1,5 @@
 <div class="kanban-board">
+
   <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
     <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
       <h2>{{ column.category_title }}</h2>
@@ -8,6 +9,10 @@
         <div class="kanban-card" *ngFor="let card of column.tasks" cdkDrag [cdkDragData]="card">
           {{ card.item_title }}
         </div>
+      </div>
+      <div class="actions">
+        <button mat-mini-fab class="add_task-btn" (click)="openDialog('create', column.category_id)">
+          <mat-icon>add</mat-icon></button>
       </div>
     </div>
     <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="category-form">
@@ -29,35 +34,3 @@
     </form>
   </div>
 </div>
-
-
-<!-- <div class="kanban-board">
-  <div class="kanban-columns" cdkDropListGroup>
-    <div cdkDropList *ngFor="let category of data" class="kanban-column" [cdkDropListData]="category">
-      <h2>{{ category.category_title }}</h2>
-      <div class="kanban-cards" cdkDropList [cdkDropListData]="category.tasks" (cdkDropListDropped)="drop($event)">
-        <div class="kanban-card" *ngFor="let card of category.tasks" cdkDrag [cdkDragData]="card">
-          {{ card.item_title }}
-        </div>
-      </div>
-    </div>
-
-    <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="category-form">
-      <ng-template #formContent [ngIf]="creatingCategory" [ngIfElse]="buttonContent">
-        <mat-form-field appearance="outline">
-          <input matInput placeholder="Category Title" formControlName="category_title">
-          <mat-error *ngIf="categoryForm.get('category_title').hasError('required')">
-            Category Title is required
-          </mat-error>
-        </mat-form-field>
-        <div class="actions">
-          <button mat-raised-button color="primary" type="submit">Add Category</button>
-          <button mat-mini-fab (click)="onCancelCategory()"><mat-icon>clear</mat-icon></button>
-        </div>
-      </ng-template>
-      <ng-template #buttonContent>
-        <button mat-raised-button color="primary" (click)="creatingCategory = true">New Category</button>
-      </ng-template>
-    </form>
-  </div>
-</div> -->

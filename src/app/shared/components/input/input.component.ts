@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-input',
   template: `
     <form [formGroup]="form">
-      <mat-form-field appearance="outline">
+      <mat-form-field>
         <input matInput [placeholder]="label" [formControlName]="field" />
         <mat-error *ngIf="invalid">{{ message }}</mat-error>
       </mat-form-field>

@@ -7,12 +7,16 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { takeUntil } from 'rxjs/operators';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { IColumn } from '../../models/column.interface';
 import { BoardService } from 'src/app/core/services/board.service';
 import { CatergoryService } from 'src/app/core/services/catergory.service';
 import { Actions } from 'src/app/shared/models/maps/crud.map';
 import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.component';
+import { TaskModalComponent } from '../task-modal/task-modal.component';
+import { ICategory } from '../../models/category.types';
+import { CreateItem, IItem } from '../../models/item.types';
 
 @Component({
   selector: 'app-kanban',
@@ -21,6 +25,7 @@ import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.compon
 })
 export class KanbanComponent implements OnInit, OnDestroy {
   public columns = new BehaviorSubject<IColumn[]>([]);
+  public categories = new BehaviorSubject<ICategory[]>([]);
   private unSub = new Subject<void>();
   public categoryForm: FormGroup;
   public creatingCategory = false;
@@ -33,7 +38,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private boardService: BoardService,
-    private categoryService: CatergoryService
+    private categoryService: CatergoryService,
+    public dialog: MatDialog
   ) {}
 
   onDrop(event: CdkDragDrop<IColumn[]>) {
@@ -89,10 +95,59 @@ export class KanbanComponent implements OnInit, OnDestroy {
       .onColumnsChange()
       .pipe(takeUntil(this.unSub))
       .subscribe((columns) => {
-        console.log(columns);
+        // console.log(columns);
         this.columns.next(columns);
       });
     this.boardService.init();
+
+    this.categoryService.onCategoriesChange().subscribe((categories) => {
+      // console.log(categories);
+      this.categories.next(categories);
+    });
+  }
+
+  openDialog(action: Actions, item?: unknown) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '450px';
+    dialogConfig.data = { header: '', item: {} };
+
+    switch (action) {
+      case 'create':
+        (dialogConfig.data.header = 'Create Task'),
+          (dialogConfig.data.item.category_id = item);
+        break;
+      case 'update':
+        dialogConfig.data = { header: 'Update Task', item };
+        break;
+      case 'view':
+        dialogConfig.data = { header: 'Task Details', item };
+        break;
+    }
+
+    const taskDialogRef = this.dialog.open(TaskModalComponent, dialogConfig);
+
+    taskDialogRef.afterClosed().subscribe((res) => {
+      console.log(res, action, item);
+      // if (res) {
+      //   switch (action) {
+      //     case 'create':
+      //       this.categoryService.create(res).subscribe((res) => {
+      //         for (let i = 0; i < this.columns.value.length; i++)
+      //           if (this.columns.value[i].id === item) {
+      //             this.columns.value[i].tasks.push(res as Partial<IItem>);
+      //             break;
+      //           }
+      //       });
+      //       break;
+      //     case 'update':
+      //       // this.boardService.update(res.id, res);
+      //       break;
+      //     case 'delete':
+      //       // this.boardService.delete(res.id);
+      //       break;
+      //   }
+      // }
+    });
   }
 
   ngOnDestroy() {

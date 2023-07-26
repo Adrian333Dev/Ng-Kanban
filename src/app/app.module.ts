@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { authInterceptorProvider } from './core/interceptors/auth.interceptor';
 import { BoardModule } from './board/board.module';
 import { errorInterceptorProvider } from './core/interceptors/error.interceptor';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +21,14 @@ import { errorInterceptorProvider } from './core/interceptors/error.interceptor'
     AuthModule,
     BoardModule,
   ],
-  providers: [authInterceptorProvider, errorInterceptorProvider],
+  providers: [
+    authInterceptorProvider,
+    errorInterceptorProvider,
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline', floatLabel: 'always' },
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
