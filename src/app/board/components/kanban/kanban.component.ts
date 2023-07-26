@@ -17,6 +17,7 @@ import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.compon
 import { TaskModalComponent } from '../task-modal/task-modal.component';
 import { ICategory } from '../../models/category.types';
 import { CreateItem, IItem } from '../../models/item.types';
+import { ItemService } from 'src/app/core/services/item.service';
 
 @Component({
   selector: 'app-kanban',
@@ -39,6 +40,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private boardService: BoardService,
     private categoryService: CatergoryService,
+    private itemService: ItemService,
     public dialog: MatDialog
   ) {}
 
@@ -95,13 +97,12 @@ export class KanbanComponent implements OnInit, OnDestroy {
       .onColumnsChange()
       .pipe(takeUntil(this.unSub))
       .subscribe((columns) => {
-        // console.log(columns);
+        console.log(columns);
         this.columns.next(columns);
       });
     this.boardService.init();
 
     this.categoryService.onCategoriesChange().subscribe((categories) => {
-      // console.log(categories);
       this.categories.next(categories);
     });
   }
@@ -114,7 +115,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
     switch (action) {
       case 'create':
         (dialogConfig.data.header = 'Create Task'),
-          (dialogConfig.data.item.category_id = item);
+          (dialogConfig.data.item.category_id = item),
+          (dialogConfig.data.categories = this.categories.value);
         break;
       case 'update':
         dialogConfig.data = { header: 'Update Task', item };
@@ -127,26 +129,26 @@ export class KanbanComponent implements OnInit, OnDestroy {
     const taskDialogRef = this.dialog.open(TaskModalComponent, dialogConfig);
 
     taskDialogRef.afterClosed().subscribe((res) => {
-      console.log(res, action, item);
-      // if (res) {
-      //   switch (action) {
-      //     case 'create':
-      //       this.categoryService.create(res).subscribe((res) => {
-      //         for (let i = 0; i < this.columns.value.length; i++)
-      //           if (this.columns.value[i].id === item) {
-      //             this.columns.value[i].tasks.push(res as Partial<IItem>);
-      //             break;
-      //           }
-      //       });
-      //       break;
-      //     case 'update':
-      //       // this.boardService.update(res.id, res);
-      //       break;
-      //     case 'delete':
-      //       // this.boardService.delete(res.id);
-      //       break;
-      //   }
-      // }
+      // console.log(res, action, item);
+      if (res) {
+        switch (action) {
+          case 'create':
+            this.itemService.create(res).subscribe((res) => {
+              for (let i = 0; i < this.columns.value.length; i++)
+                if (this.columns.value[i].id === item) {
+                  this.columns.value[i].tasks.push(res as Partial<IItem>);
+                  break;
+                }
+            });
+            break;
+          case 'update':
+            // this.boardService.update(res.id, res);
+            break;
+          case 'delete':
+            // this.boardService.delete(res.id);
+            break;
+        }
+      }
     });
   }
 

@@ -27,14 +27,16 @@ export class BoardService {
     ]).subscribe(([categories, items]) => {
       if (!categories.length) return;
       const columnsMap = categories.reduce((acc, category) => {
-        acc[category.id] = { ...category, items: [] };
+        acc[category.id] = { ...category, tasks: [] };
         return acc;
       }, {});
+      // console.log(columnsMap, items);
       if (items.length)
         items.forEach((item) => {
           if (columnsMap[item.category_id])
-            columnsMap[item.category_id].items.push(item);
+            columnsMap[item.category_id].tasks.push(item);
         });
+      // console.log(columnsMap);
       const columns = Object.values(columnsMap) as IColumn[];
       this.columns.next(columns);
     });

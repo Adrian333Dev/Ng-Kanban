@@ -6,6 +6,8 @@
       <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"
         cdkAutosizeMaxRows="10" placeholder="Description" formControlName="item_description"></textarea>
     </mat-form-field>
+    <app-dropdown [form]="form" label="Category" field="category_id" [data]="categories"
+      [fields]="dropdownFields"></app-dropdown>
   </form>
 </div>
 <div mat-dialog-actions class="actions">

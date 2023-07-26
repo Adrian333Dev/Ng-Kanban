@@ -18,6 +18,12 @@ export interface DialogData {
 })
 export class TaskModalComponent {
   public form: FormGroup;
+  public categories: ICategory[];
+
+  public dropdownFields = {
+    value: 'id',
+    text: 'category_title',
+  } as any;
 
   constructor(
     public dialogRef: MatDialogRef<TaskModalComponent>,
@@ -37,10 +43,11 @@ export class TaskModalComponent {
     }
   }
   ngOnInit() {
+    this.categories = this.data.categories ?? [];
     this.form = this.fb.group({
       item_title: [this.data.item?.item_title ?? '', [Validators.required]],
       item_description: [this.data.item?.item_description ?? ''],
-      category_id: [this.data.item?.category_id ?? ''],
+      category_id: [this.data.item?.category_id ?? '', [Validators.required]],
     });
   }
 }

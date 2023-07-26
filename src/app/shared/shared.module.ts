@@ -8,8 +8,14 @@ import { MaterialModule } from './material.module';
 import { InputComponent } from './components/input/input.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { DotMenuComponent } from './components/dot-menu/dot-menu.component';
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
-const components = [InputComponent, NavbarComponent, DotMenuComponent];
+const components = [
+  InputComponent,
+  NavbarComponent,
+  DotMenuComponent,
+  DropdownComponent,
+];
 
 @NgModule({
   declarations: [...components],
