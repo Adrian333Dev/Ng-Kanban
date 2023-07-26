@@ -44,3 +44,7 @@ Thumbs.db
 # Env files
 .env
 .env.*
+
+# Notes
+notes.md
+notes
