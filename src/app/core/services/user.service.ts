@@ -4,35 +4,41 @@ import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import {
   CreateUser,
-  IUser,
+  UserResponse,
   IUserList,
   UpdateUser,
+  IUser,
 } from 'src/app/user/models/user.types';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private readonly apiUrl = environment.url + 'user/';
+  private users = new BehaviorSubject<UserResponse[]>([]);
 
   constructor(private http: HttpClient) {}
 
-  public list() {
-    return this.http.get<IUserList>(this.apiUrl + 'list/');
+  public onUsersChange() {
+    return this.users.asObservable();
   }
 
-  public getCurrentUser() {
-    // find the current user in the list of users by username or email
-    return this.list().pipe(
-      map((users) => {
-        const currentUser = users.list.find(
-          (user) => user.username === localStorage.getItem('username')
-        );
-        return currentUser;
-      }
-      )
-    );
+  public setUsers(users: UserResponse[]) {
+    this.users.next(users);
   }
+
+  public list() {
+    return this.http
+      .get<UserResponse[]>(this.apiUrl + 'list/')
+      .pipe(
+        map((users) =>
+          users.map((user) => ({ id: user[0], username: user[1] }))
+        )
+      );
+  }
+
+  public getCurrentUser() {}
 
   public get(id: number) {
     return this.http.get<IUser>(this.apiUrl + `get/${id}/`);

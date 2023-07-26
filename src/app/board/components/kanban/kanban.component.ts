@@ -6,6 +6,8 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IColumn } from '../../models/column.interface';
+import { IItem } from '../../models/item.types';
 
 @Component({
   selector: 'app-kanban',
@@ -17,14 +19,26 @@ export class KanbanComponent {
   public creatingCategory = false;
   data = mockData;
 
-  constructor(private fb: FormBuilder) {}
-
-  onDrop(event: CdkDragDrop<Partial<any>[]>) {
-    console.log('onDrop', event);
+  constructor(private fb: FormBuilder) {
+    console.log('data', this.data);
   }
 
-  onCardDrop(event: CdkDragDrop<any[]>, category: any) {
-    console.log('onCardDrop', category);
+  onDrop(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.data, event.previousIndex, event.currentIndex);
+  }
+
+  onCardDrop(event: CdkDragDrop<any[]>, cards: any[]) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(cards, event.previousIndex, event.currentIndex);
+    } else {
+      const movedCard = cards[event.previousIndex];
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
   }
 
   onSubmitCategory() {

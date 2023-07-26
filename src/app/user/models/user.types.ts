@@ -7,8 +7,10 @@ export interface IUser {
   password: string;
 }
 
+export interface UserResponse extends Pick<IUser, 'id' | 'username'> {}
+
 export interface IUserList {
-  list: IUser[];
+  list: UserResponse[];
 }
 
 export type CreateUser = Omit<IUser, 'id'>;

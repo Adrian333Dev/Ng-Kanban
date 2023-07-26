@@ -1,0 +1,20 @@
+.table-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.table {
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #ccc;
+
+  input[type="checkbox"] {
+    padding: 0;
+  }
+}
+
+.mat-mdc-cell.mdc-data-table__cell.cdk-cell.cdk-column-select.mat-column-select.ng-star-inserted,
+.mat-mdc-header-cell.mdc-data-table__header-cell.cdk-header-cell.cdk-column-select.mat-column-select.ng-star-inserted {
+  padding: 5px;
+}
