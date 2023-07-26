@@ -14,7 +14,9 @@ export interface IItem {
 
 export interface IItemList {
   message: string;
-  items: IItem[];
+  items: {
+    [key: string]: IItem;
+  };
 }
 
 export type CreateItem = Pick<IItem, 'item_title' | 'item_description'> & {

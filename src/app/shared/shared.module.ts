@@ -7,8 +7,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { InputComponent } from './components/input/input.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { DotMenuComponent } from './components/dot-menu/dot-menu.component';
 
-const components = [InputComponent, NavbarComponent];
+const components = [InputComponent, NavbarComponent, DotMenuComponent];
 
 @NgModule({
   declarations: [...components],

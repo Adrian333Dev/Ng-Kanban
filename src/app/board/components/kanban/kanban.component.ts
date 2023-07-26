@@ -8,9 +8,11 @@ import {
 } from '@angular/cdk/drag-drop';
 import { takeUntil } from 'rxjs/operators';
 
-import { mockData } from './../../constants';
 import { IColumn } from '../../models/column.interface';
 import { BoardService } from 'src/app/core/services/board.service';
+import { CatergoryService } from 'src/app/core/services/catergory.service';
+import { Actions } from 'src/app/shared/models/maps/crud.map';
+import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.component';
 
 @Component({
   selector: 'app-kanban',
@@ -22,9 +24,17 @@ export class KanbanComponent implements OnInit, OnDestroy {
   private unSub = new Subject<void>();
   public categoryForm: FormGroup;
   public creatingCategory = false;
-  // data = mockData;
 
-  constructor(private fb: FormBuilder, private boardService: BoardService) {}
+  public menuItems: IDotMenuItem[] = [
+    { label: 'Edit', icon: 'edit', action: 'update' },
+    { label: 'Delete', icon: 'delete', action: 'delete' },
+  ];
+
+  constructor(
+    private fb: FormBuilder,
+    private boardService: BoardService,
+    private categoryService: CatergoryService
+  ) {}
 
   onDrop(event: CdkDragDrop<IColumn[]>) {
     moveItemInArray(
@@ -50,15 +60,24 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   onSubmitCategory() {
     if (this.categoryForm.valid) {
-      console.log('onSubmitCategory', this.categoryForm.value);
-      this.categoryForm.reset();
-      this.creatingCategory = false;
+      this.categoryService
+        .create(this.categoryForm.value)
+        .pipe(takeUntil(this.unSub))
+        .subscribe((res) => {
+          this.boardService.init();
+          this.onCancelCategory();
+          this.boardService.init();
+        });
     } else this.categoryForm.markAllAsTouched();
   }
 
   onCancelCategory() {
     this.categoryForm.reset();
     this.creatingCategory = false;
+  }
+
+  onMenuItemClick(action: Actions) {
+    console.log(action);
   }
 
   ngOnInit(): void {
@@ -70,6 +89,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
       .onColumnsChange()
       .pipe(takeUntil(this.unSub))
       .subscribe((columns) => {
+        console.log(columns);
         this.columns.next(columns);
       });
     this.boardService.init();

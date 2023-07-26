@@ -2,6 +2,7 @@
   <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
     <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
       <h2>{{ column.category_title }}</h2>
+      <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onMenuItemClick($event)"></app-dot-menu>
       <div class="kanban-cards" cdkDropList [cdkDropListData]="column.tasks"
         (cdkDropListDropped)="onCardDrop($event, column.tasks)">
         <div class="kanban-card" *ngFor="let card of column.tasks" cdkDrag [cdkDragData]="card">
