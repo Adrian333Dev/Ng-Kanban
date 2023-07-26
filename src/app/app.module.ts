@@ -6,9 +6,9 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { authInterceptorProvider } from './core/interceptors/auth.interceptor';
 import { BoardModule } from './board/board.module';
+import { errorInterceptorProvider } from './core/interceptors/error.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,13 +20,7 @@ import { BoardModule } from './board/board.module';
     AuthModule,
     BoardModule,
   ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-  ],
+  providers: [authInterceptorProvider, errorInterceptorProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

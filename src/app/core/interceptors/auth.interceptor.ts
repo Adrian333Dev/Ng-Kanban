@@ -5,6 +5,7 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse,
+  HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { Observable, catchError, switchMap } from 'rxjs';
 
@@ -53,3 +54,9 @@ export class AuthInterceptor implements HttpInterceptor {
     );
   }
 }
+
+export const authInterceptorProvider = {
+  provide: HTTP_INTERCEPTORS,
+  useClass: AuthInterceptor,
+  multi: true,
+};
