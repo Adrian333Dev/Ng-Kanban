@@ -1,30 +1,37 @@
-import { mockData } from './../../constants';
-import { Component } from '@angular/core';
+import { Subject, BehaviorSubject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+
+import { mockData } from './../../constants';
 import { IColumn } from '../../models/column.interface';
-import { IItem } from '../../models/item.types';
+import { BoardService } from 'src/app/core/services/board.service';
 
 @Component({
   selector: 'app-kanban',
   templateUrl: './kanban.component.html',
   styleUrls: ['./kanban.component.scss'],
 })
-export class KanbanComponent {
+export class KanbanComponent implements OnInit, OnDestroy {
+  public columns = new BehaviorSubject<IColumn[]>([]);
+  private unSub = new Subject<void>();
   public categoryForm: FormGroup;
   public creatingCategory = false;
-  data = mockData;
+  // data = mockData;
 
-  constructor(private fb: FormBuilder) {
-    console.log('data', this.data);
-  }
+  constructor(private fb: FormBuilder, private boardService: BoardService) {}
 
-  onDrop(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.data, event.previousIndex, event.currentIndex);
+  onDrop(event: CdkDragDrop<IColumn[]>) {
+    moveItemInArray(
+      this.columns.value,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 
   onCardDrop(event: CdkDragDrop<any[]>, cards: any[]) {
@@ -58,5 +65,18 @@ export class KanbanComponent {
     this.categoryForm = this.fb.group({
       category_title: ['', [Validators.required, Validators.minLength(1)]],
     });
+
+    this.boardService
+      .onColumnsChange()
+      .pipe(takeUntil(this.unSub))
+      .subscribe((columns) => {
+        this.columns.next(columns);
+      });
+    this.boardService.init();
+  }
+
+  ngOnDestroy() {
+    this.unSub.next();
+    this.unSub.complete();
   }
 }

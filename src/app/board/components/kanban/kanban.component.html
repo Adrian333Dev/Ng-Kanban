@@ -1,6 +1,6 @@
 <div class="kanban-board">
-  <div class="kanban-columns" cdkDropList [cdkDropListData]="data" (cdkDropListDropped)="onDrop($event)">
-    <div class="kanban-column" *ngFor="let column of data" cdkDrag [cdkDragData]="column">
+  <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
+    <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
       <h2>{{ column.category_title }}</h2>
       <div class="kanban-cards" cdkDropList [cdkDropListData]="column.tasks"
         (cdkDropListDropped)="onCardDrop($event, column.tasks)">
