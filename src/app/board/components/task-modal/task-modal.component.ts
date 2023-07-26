@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IItem } from '../../models/item.types';
 import { ICategory } from '../../models/category.types';
 
-export interface DialogData {
+interface DialogData {
   item: IItem;
   header: string;
   categories: ICategory[];

@@ -16,8 +16,8 @@ import { Actions } from 'src/app/shared/models/maps/crud.map';
 import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.component';
 import { TaskModalComponent } from '../task-modal/task-modal.component';
 import { ICategory } from '../../models/category.types';
-import { CreateItem, IItem } from '../../models/item.types';
 import { ItemService } from 'src/app/core/services/item.service';
+import { PromptModalComponent } from 'src/app/shared/components/prompt-modal/prompt-modal.component';
 
 @Component({
   selector: 'app-kanban',
@@ -84,8 +84,29 @@ export class KanbanComponent implements OnInit, OnDestroy {
     this.creatingCategory = false;
   }
 
-  onMenuItemClick(action: Actions) {
-    console.log(action);
+  onCategoryMenuItemClick(action: Actions, id: any) {
+    this.creatingCategory = false;
+    switch (action) {
+      case 'delete':
+        const dialogRef = this.dialog.open(PromptModalComponent, {
+          width: '400px',
+          data: {
+            header: 'Delete Category',
+            message: 'Are you sure you want to delete this category?',
+            mode: 'delete',
+          },
+        });
+        dialogRef.afterClosed().subscribe((res) => {
+          if (res)
+            this.categoryService
+              .delete(id)
+              .pipe(takeUntil(this.unSub))
+              .subscribe((res) => this.boardService.init());
+        });
+        break;
+      case 'update':
+        break;
+    }
   }
 
   ngOnInit(): void {
@@ -97,7 +118,6 @@ export class KanbanComponent implements OnInit, OnDestroy {
       .onColumnsChange()
       .pipe(takeUntil(this.unSub))
       .subscribe((columns) => {
-        console.log(columns);
         this.columns.next(columns);
       });
     this.boardService.init();
@@ -107,7 +127,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDialog(action: Actions, item?: unknown) {
+  openTaskDialog(action: Actions, item?: unknown) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '450px';
     dialogConfig.data = { header: '', item: {} };

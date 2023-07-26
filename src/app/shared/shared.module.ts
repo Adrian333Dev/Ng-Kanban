@@ -9,12 +9,14 @@ import { InputComponent } from './components/input/input.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { DotMenuComponent } from './components/dot-menu/dot-menu.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
+import { PromptModalComponent } from './components/prompt-modal/prompt-modal.component';
 
 const components = [
   InputComponent,
   NavbarComponent,
   DotMenuComponent,
   DropdownComponent,
+  PromptModalComponent,
 ];
 
 @NgModule({
