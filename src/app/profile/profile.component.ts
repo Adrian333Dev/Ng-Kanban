@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   public initEditForm(): void {
     this.detailsForm = this.fb.group({
-      username: [this.user?.username || '', nameValidator],
+      // username: [this.user?.username || '', nameValidator],
       first_name: [this.user?.first_name || '', nameValidator],
       last_name: [this.user?.last_name || '', nameValidator],
       email: [this.user?.email || '', emailValidator],
@@ -58,15 +58,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   public submitDetailsForm(): void {
-    if (this.detailsForm.valid) {
-      const user = {
-        id: this.user.id,
-        ...this.detailsForm.value,
-      } as IUser;
-      this.userService.update(this.user.id, user).subscribe((res) => {
-        this.authService.logout();
-      });
-    } else this.detailsForm.markAllAsTouched();
+    if (!this.detailsForm.valid) {
+      this.detailsForm.markAllAsTouched();
+      return;
+    }
+    const user = {
+      ...this.user,
+      ...this.detailsForm.value,
+    };
+    this.userService.update(this.user.id, user).subscribe((res) => {
+      // this.settingsService.setCurrentUser(res);
+      this.authService.logout();
+    });
   }
 
   public submitPasswordForm(): void {
