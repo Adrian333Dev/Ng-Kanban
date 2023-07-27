@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BsModalComponent } from '../components/bs-modal/bs-modal.component';
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class BsModalService {
   private modals: BsModalComponent[] = [];
 

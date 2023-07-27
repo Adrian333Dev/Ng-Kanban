@@ -1,10 +1,18 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ViewEncapsulation,
+  OnInit,
+  OnDestroy,
+  Input,
+  ElementRef,
+} from '@angular/core';
 import { BsModalService } from '../../services/bs-modal.service';
 
 @Component({
   selector: 'bs-modal',
   templateUrl: './bs-modal.component.html',
   styleUrls: ['./bs-modal.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class BsModalComponent implements OnInit, OnDestroy {
   @Input() id?: string;

@@ -22,7 +22,7 @@ const components = [
 ];
 
 @NgModule({
-  declarations: [...components, BsModalComponent],
+  declarations: [...components],
   imports: [
     CommonModule,
     MaterialModule,

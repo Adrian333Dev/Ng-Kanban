@@ -43,10 +43,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   public initEditForm(): void {
     this.detailsForm = this.fb.group({
+      username: [this.user?.username || '', nameValidator],
       first_name: [this.user?.first_name || '', nameValidator],
       last_name: [this.user?.last_name || '', nameValidator],
       email: [this.user?.email || '', emailValidator],
-      username: [this.user?.username || '', nameValidator],
     });
   }
 
