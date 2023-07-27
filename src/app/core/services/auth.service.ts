@@ -37,6 +37,7 @@ export class AuthService {
 
   logout(): void {
     this.setTokens({ access: '', refresh: '' });
+    localStorage.setItem('username', '');
     this.router.navigate(['/login']);
   }
 

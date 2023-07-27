@@ -10,6 +10,7 @@ import {
   IUser,
 } from 'src/app/user/models/user.types';
 import { BehaviorSubject } from 'rxjs';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,10 @@ export class UserService {
   private readonly apiUrl = environment.url + 'user/';
   private users = new BehaviorSubject<UserResponse[]>([]);
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private settingsService: SettingsService
+  ) {}
 
   public onUsersChange() {
     return this.users.asObservable();
@@ -38,7 +42,10 @@ export class UserService {
       );
   }
 
-  public getCurrentUser() {}
+  public getCurrentUser() {
+    const id = this.settingsService.currentUserId;
+    return this.http.get<IUser>(this.apiUrl + `get/${id}/`);
+  }
 
   public get(id: number) {
     return this.http.get<IUser>(this.apiUrl + `get/${id}/`);

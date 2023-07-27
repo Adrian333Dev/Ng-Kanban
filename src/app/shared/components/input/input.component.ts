@@ -1,13 +1,30 @@
 import { Input } from '@angular/core';
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ValuesOf } from '../../models/helpers';
+
+export const InptWidth = {
+  full: 'w-100',
+  default: '',
+  'w-25': 'w-25',
+  'w-50': 'w-50',
+  'w-75': 'w-75',
+} as const;
+
+export type InptWidth = ValuesOf<typeof InptWidth>;
 
 @Component({
   selector: 'app-input',
   template: `
     <form [formGroup]="form">
-      <mat-form-field>
-        <input matInput [placeholder]="label" [formControlName]="field" />
+      <mat-form-field [class]="width">
+        <mat-label>{{ label }}</mat-label>
+        <input
+          matInput
+          [formControlName]="field"
+          [type]="type"
+          [placeholder]="placeholder"
+        />
         <mat-error *ngIf="invalid">{{ message }}</mat-error>
       </mat-form-field>
     </form>
@@ -21,6 +38,8 @@ export class InputComponent {
 
   @Input() type: string = 'text';
   @Input() label: string = '';
+  @Input() placeholder: string = '';
+  @Input() width: InptWidth = 'w-100';
 
   get fcn() {
     return this.form?.get(this.field);

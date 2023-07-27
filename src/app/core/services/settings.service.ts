@@ -9,7 +9,7 @@ import { IUser } from 'src/app/user/models/user.types';
 export class SettingsService {
   private _currentUser = new BehaviorSubject<IUser>(null);
 
-  constructor(private userService: UserService) {}
+  constructor() {}
 
   public get currentUser() {
     return this._currentUser.value;

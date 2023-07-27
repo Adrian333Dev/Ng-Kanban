@@ -1,44 +1,77 @@
 <app-navbar></app-navbar>
-
-<!-- <div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Profile</h1>
-      <hr>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-header">
-              <h4>Profile</h4>
-            </div>
-            <div class="card-body">
-              <img src="https://via.placeholder.com/150" alt="Profile Image" class="img-fluid">
-              <hr>
-              <p class="lead">Name: {{user.name}}</p>
-              <p class="lead">Email: {{user.email}}</p>
-              <p class="lead">Username: {{user.username}}</p>
-              <p class="lead">Member Since: {{user.createdAt | date:'mediumDate'}}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-header">
-              <h4>Posts</h4>
-            </div>
-            <div class="card-body">
-              <div *ngFor="let post of posts">
-                <div class="card mb-3">
-                  <div class="card-header">
-                    <h5>{{post.title}}</h5>
-                  </div>
-                  <div class="card-body">
-                    <p class="lead">{{post.body}}</p>
-                    <hr>
-                    <p class="lead">Posted By: {{post.username}}</p>
-                    <p class="lead">Posted On: {{post.createdAt | date:'mediumDate'}}</p>
+<div class="container">
+  <div class="row flex-lg-nowrap">
+    <div class="profile-wrapper col my-3">
+      <div class="card mb-5">
+        <div class="card-body">
+          <div class="e-profile">
+            <div class="row mb-2">
+              <div class="col-12 col-sm-auto mb-3">
+                <div class="mx-auto" style="width: 160px;">
+                  <div class="d-flex justify-content-center align-items-center rounded"
+                    style="height: 160px; background-color: rgb(233, 236, 239);">
+                    <span style="color: rgb(166, 168, 170); font: bold 8pt Arial;">160x160</span>
                   </div>
                 </div>
+              </div>
+              <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                <div class="text-sm-left mb-2 mb-sm-0">
+                  <h2 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user?.first_name}} {{user?.last_name}}</h2>
+                  <p class="username">@{{user?.username}}</p>
+                </div>
+              </div>
+            </div>
+            <h4 class="mb-3">Edit profile</h4>
+            <form class="form row mb-5" [formGroup]="detailsForm" (ngSubmit)="submitDetailsForm()">
+              <div class="col">
+                <div class="row mb-2">
+                  <div class="col">
+                    <app-input [form]="detailsForm" field="first_name" label='First Name'></app-input>
+                  </div>
+                  <div class="col">
+                    <app-input [form]="detailsForm" field="last_name" label='Last Name'></app-input>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col">
+                    <app-input [form]="detailsForm" field="username" label='Username'></app-input>
+                  </div>
+                  <div class="col">
+                    <app-input [form]="detailsForm" field="email" label='Email'></app-input>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col d-flex justify-content-end">
+                  <button mat-raised-button color="primary" type="submit">Save Changes</button>
+                </div>
+              </div>
+            </form>
+
+            <h4 class="mb-3">Change Password</h4>
+            <form class="form row mb-5" [formGroup]="passwordForm" (ngSubmit)="submitPasswordForm()">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <app-input [form]="passwordForm" field="password" label='New Password' type="password"
+                      placeholder="********"></app-input>
+                  </div>
+                  <div class="col">
+                    <app-input [form]="passwordForm" field="confirm_password" label='Confirm Password' type="password"
+                      placeholder="********"></app-input>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col d-flex justify-content-end">
+                    <button mat-raised-button color="primary" type="submit">Save Password</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="row mb-3">
+              <div class="col">
+                <button mat-raised-button color="warn" (click)="handleDeleteAccount()">Delete Account</button>
               </div>
             </div>
           </div>
@@ -46,4 +79,4 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>
