@@ -3,12 +3,12 @@ import { IUser } from '../user/models/user.types';
 import { UserService } from '../core/services/user.service';
 import { SettingsService } from '../core/services/settings.service';
 import { Subject, takeUntil } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   emailValidator,
   nameValidator,
   passwordValidator,
-} from '../shared/helpers/validators/form-validators';
+} from '../shared/validators/form-validators';
 import { AuthService } from '../core/services/auth.service';
 
 @Component({
@@ -69,12 +69,37 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } else this.detailsForm.markAllAsTouched();
   }
 
-  public submitPasswordForm(): void {}
+  public submitPasswordForm(): void {
+    if (!this.passwordForm.valid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+    const password = this.passwordForm.get('password').value;
+    if (password !== this.passwordForm.get('confirm_password').value)
+      alert('Passwords do not match');
+    else
+      this.userService
+        .changePassword(this.user.id, {
+          password,
+          username: this.user.username,
+          id: this.user.id,
+        })
+        .subscribe((res) => {
+          this.authService.logout();
+        });
+  }
 
   public handleDeleteAccount(): void {
-    this.userService.delete(this.user.id).subscribe((res) => {
-      this.authService.logout();
-    });
+    const confirmed = confirm('Are you sure you want to delete your account?');
+    if (confirmed) {
+      this.userService.delete(this.user.id).subscribe((res) => {
+        this.authService.logout();
+      });
+    }
+  }
+
+  public handleLogout(): void {
+    this.authService.logout();
   }
 
   ngOnDestroy(): void {

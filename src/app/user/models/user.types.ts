@@ -9,6 +9,9 @@ export interface IUser {
 
 export interface UserResponse extends Pick<IUser, 'id' | 'username'> {}
 
+export interface ChangePassword
+  extends Pick<IUser, 'id' | 'password' | 'username'> {}
+
 export interface IUserList {
   list: UserResponse[];
 }

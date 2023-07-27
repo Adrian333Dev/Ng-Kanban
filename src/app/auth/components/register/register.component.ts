@@ -6,7 +6,7 @@ import {
   nameValidator,
   emailValidator,
   passwordValidator,
-} from 'src/app/shared/helpers/validators/form-validators';
+} from 'src/app/shared/validators/form-validators';
 
 @Component({
   selector: 'app-register',

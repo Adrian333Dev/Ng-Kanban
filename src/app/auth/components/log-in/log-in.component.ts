@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import {
   nameValidator,
   passwordValidator,
-} from 'src/app/shared/helpers/validators/form-validators';
+} from 'src/app/shared/validators/form-validators';
 import { Router } from '@angular/router';
 
 @Component({

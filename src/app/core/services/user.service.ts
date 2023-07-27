@@ -8,6 +8,7 @@ import {
   IUserList,
   UpdateUser,
   IUser,
+  ChangePassword,
 } from 'src/app/user/models/user.types';
 import { BehaviorSubject } from 'rxjs';
 import { SettingsService } from './settings.service';
@@ -68,7 +69,7 @@ export class UserService {
     );
   }
 
-  public changePassword(id: number, body: { password: string }) {
+  public changePassword(id: number, body: ChangePassword) {
     return this.http.put<{ message?: string; detail?: string }>(
       this.apiUrl + `change_password/${id}/`,
       body
