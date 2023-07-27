@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { IItem } from '../../models/item.types';
 import { ICategory } from '../../models/category.types';
 import { TaskModalMode } from 'src/app/shared/models/maps/modal-modes.map';
 import { BsModalService } from 'src/app/shared/services/bs-modal.service';
+import { Actions } from 'src/app/shared/models/maps/crud.map';
 
 @Component({
   selector: 'app-task-modal',
@@ -12,6 +13,10 @@ import { BsModalService } from 'src/app/shared/services/bs-modal.service';
   styleUrls: ['./task-modal.component.scss'],
 })
 export class TaskModalComponent {
+  @Output() onSubmitted = new EventEmitter<{
+    action: Actions;
+    task: unknown;
+  }>();
   public header: string = 'Add Task';
   public task: IItem = {} as IItem;
   public categories: ICategory[] = [];
@@ -36,17 +41,24 @@ export class TaskModalComponent {
   ) {}
 
   open(): void {
-    this.modalService.open('task-modal');
+    this.modalService.open('task-action-modal');
     this.initForm();
   }
 
   close(): void {
     this.modalService.close();
+    this.form.reset();
   }
 
-  submit(): void {}
+  submit(): void {
+    if (this.form.invalid) return this.form.markAllAsTouched();
+    this.onSubmitted.emit({
+      action: this.mode,
+      task: { ...this.task, ...this.form.value },
+    });
+    this.close();
+  }
 
-  cancel(): void {}
   ngOnInit() {
     this.initForm();
   }

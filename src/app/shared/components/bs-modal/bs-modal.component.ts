@@ -15,7 +15,7 @@ import { BsModalService } from '../../services/bs-modal.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class BsModalComponent implements OnInit, OnDestroy {
-  @Input() id?: string;
+  @Input() id: string;
   isOpen = false;
   private element: any;
 

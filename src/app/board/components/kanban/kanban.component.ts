@@ -12,12 +12,11 @@ import { IColumn } from '../../models/column.interface';
 import { BoardService } from 'src/app/core/services/board.service';
 import { CatergoryService } from 'src/app/core/services/catergory.service';
 import { Actions } from 'src/app/shared/models/maps/crud.map';
-import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.component';
 import { TaskModalComponent } from '../task-modal/task-modal.component';
 import { ICategory, UpdateCategory } from '../../models/category.types';
 import { ItemService } from 'src/app/core/services/item.service';
 import { menuItems } from '../../constants';
-import { CreateItem } from '../../models/item.types';
+import { CreateItem, IItem, UpdateItem } from '../../models/item.types';
 import { EditCategoryModalComponent } from '../edit-category-modal/edit-category-modal.component';
 
 @Component({
@@ -141,27 +140,66 @@ export class KanbanComponent implements OnInit, OnDestroy {
     });
   }
 
-  openTaskDialog(action: Actions, item?: unknown) {
+  taskAction({ action, item }: { action: Actions; item?: unknown }) {
     switch (action) {
-      case 'create':
-        this.taskModal.header = 'Create Task';
-        this.taskModal.task = { category_id: item } as any;
+      case 'update':
+        this.taskModal.header = 'Update Task';
+        this.taskModal.task = item as IItem;
         this.taskModal.categories = this.categories.value;
-        this.taskModal.mode = 'create';
+        this.taskModal.mode = 'update';
         this.taskModal.open();
         break;
-      case 'update':
-        break;
       case 'view':
+        this.taskModal.header = 'View Task';
+        this.taskModal.task = item as IItem;
+        this.taskModal.categories = this.categories.value;
+        this.taskModal.mode = 'view';
+        this.taskModal.open();
+        break;
+      case 'delete':
+        const confirm = window.confirm(
+          'Are you sure you want to delete this task?'
+        );
+        if (confirm) this.onConfirmDeleteTask(item as string);
+    }
+  }
+
+  taskActionSubmit({ action, task }: { action: Actions; task: unknown }) {
+    switch (action) {
+      case 'create':
+        this.onSubmitCreateTask(task as CreateItem);
+        break;
+      case 'update':
+        this.onSubmitUpdateTask(task);
         break;
     }
+  }
+
+  onCreateTask(category_id: string) {
+    this.taskModal.header = 'Create Task';
+    this.taskModal.task = { category_id } as any;
+    this.taskModal.categories = this.categories.value;
+    this.taskModal.mode = 'create';
+    this.taskModal.open();
   }
 
   onSubmitCreateTask(task: CreateItem) {
     this.itemService.create(task).subscribe((res) => this.boardService.init());
   }
 
-  onSubmitUpdateTask(task: CreateItem) {}
+  onSubmitUpdateTask(task: Partial<IItem>) {
+    const { id, item_id, ...body } = task;
+    this.itemService
+      .update(task.id, body as UpdateItem)
+      .subscribe((res) => this.boardService.init());
+  }
+
+  onConfirmDeleteTask(id: string) {
+    this.itemService
+      .delete(id)
+      .pipe(takeUntil(this.unSub))
+      .subscribe((res) => this.boardService.init());
+  }
 
   ngOnDestroy() {
     this.unSub.next();

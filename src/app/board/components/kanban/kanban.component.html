@@ -1,15 +1,15 @@
 <div class="kanban-board">
   <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
     <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
-      <h2>{{ column.category_title }}</h2>
+      <h3>{{ column.category_title }}</h3>
       <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onCategoryMenuItemClick($event, column.id)"></app-dot-menu>
       <div class="kanban-cards" cdkDropList [cdkDropListData]="column.tasks"
         (cdkDropListDropped)="onCardDrop($event, column.tasks)">
         <app-task-card *ngFor="let card of column.tasks" [task]="card" cdkDrag [cdkDragData]="card"
-          [categories]="categories.value"></app-task-card>
+          [categories]="categories.value" (onMenuClick)="taskAction($event)"></app-task-card>
       </div>
       <div class="actions">
-        <button mat-mini-fab class="add_task-btn" (click)="openTaskDialog('create', column.id)">
+        <button mat-mini-fab class="add_task-btn" (click)="onCreateTask(column.id)">
           <mat-icon>add</mat-icon></button>
       </div>
     </div>
@@ -33,6 +33,5 @@
   </div>
 </div>
 
-<app-task-modal #taskModal></app-task-modal>
+<app-task-modal #taskModal (onSubmitted)="taskActionSubmit($event)"></app-task-modal>
 <app-edit-category-modal #editCategoryModal (onSubmitted)="onSubmitEditCategory($event)"></app-edit-category-modal>
-```

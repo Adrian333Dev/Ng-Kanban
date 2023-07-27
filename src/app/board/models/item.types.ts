@@ -20,7 +20,7 @@ export interface IItemList {
 }
 
 export type CreateItem = Pick<IItem, 'item_title' | 'item_description'> & {
-  category_id: number;
+  category_id: string;
 };
 
 export type UpdateItem = Partial<CreateItem & { item_id: string }>;
