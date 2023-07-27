@@ -7,6 +7,7 @@ export interface ICategory {
   category_title: string;
   created_date: string | Date;
   user_accesses: IUser[];
+  order_id: number;
 }
 
 export interface ICategoryList {
@@ -14,6 +15,9 @@ export interface ICategoryList {
   categories: ICategory[];
 }
 
-export type CreateCategory = Pick<ICategory, 'name' | 'category_title'>;
+export type CreateCategory = Pick<ICategory, 'category_title'>;
 
-export type UpdateCategory = Partial<CreateCategory>;
+export type UpdateCategory = Pick<
+  ICategory,
+  'id' | 'category_title' | 'order_id'
+>;

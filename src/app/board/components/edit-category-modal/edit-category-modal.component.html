@@ -1,0 +1,15 @@
+<bs-modal id="edit-category-modal">
+  <div class="modal-header">
+    <h4 class="modal-title">Edit Category</h4>
+    <button type="button" class="btn-close" (click)="modalService.close()"></button>
+  </div>
+  <div class="modal-body">
+    <form class="task-form" [formGroup]="form" (ngSubmit)="submit()">
+      <app-input [form]="form" label="Title" placeholder="To Do" field="category_title"></app-input>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button type="submit" (click)="submit()" color="primary">Save</button>
+    <button mat-raised-button (click)="modalService.close()">Cancel</button>
+  </div>
+</bs-modal>

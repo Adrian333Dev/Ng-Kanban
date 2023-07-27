@@ -1,35 +1,38 @@
-<h1 mat-dialog-title class="dialog-title">{{data.header}}</h1>
-<div mat-dialog-content>
-  <!-- Form -->
-  <form class="task-form" [formGroup]="form" (ngSubmit)="submit()" *ngIf="data.mode !== 'view'">
-    <app-input [form]="form" label="Title" field="item_title"></app-input>
-    <mat-form-field>
-      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"
-        cdkAutosizeMaxRows="10" placeholder="Description" formControlName="item_description"></textarea>
-    </mat-form-field>
-    <app-dropdown [form]="form" label="Category" field="category_id" [data]="categories"
-      [fields]="dropdownFields"></app-dropdown>
-  </form>
-
-  <!-- View -->
-  <div class="task-view" *ngIf="data.mode === 'view'">
-    <mat-form-field>
-      <mat-label>Title</mat-label>
-      <input matInput [value]="task.item_title" [readonly]="true">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"
-        cdkAutosizeMaxRows="10" [value]="task.item_description" [readonly]="true">
-        </textarea>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Category</mat-label>
-      <input matInput [value]="category_title" [readonly]="true">
-    </mat-form-field>
+<bs-modal id="task-modal">
+  <div class="modal-header">
+    <h4 class="modal-title">{{header}}</h4>
+    <button type="button" class="btn-close" (click)="modalService.close()"></button>
   </div>
-</div>
-<div mat-dialog-actions class="actions">
-  <button mat-raised-button type="submit" (click)="submit()" color="primary" *ngIf="mode !== 'view'">Save</button>
-  <button mat-raised-button (click)="cancel()">{{mode === 'view' ? 'Close' : 'Cancel'}}</button>
-</div>
+  <div class="modal-body">
+    <form class="task-form" [formGroup]="form" (ngSubmit)="submit()" *ngIf="mode !== 'view'">
+      <app-input [form]="form" label="Title" placeholder="Task" field="item_title"></app-input>
+      <mat-form-field>
+        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"
+          cdkAutosizeMaxRows="10" placeholder="Description" formControlName="item_description"></textarea>
+      </mat-form-field>
+      <app-dropdown [form]="form" label="Category" field="category_id" [data]="categories"
+        [fields]="dropdownFields"></app-dropdown>
+    </form>
+
+    <div class="task-view" *ngIf="mode === 'view'">
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput [value]="task.item_title" [readonly]="true">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"
+          cdkAutosizeMaxRows="10" [value]="task.item_description" [readonly]="true">
+          </textarea>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Category</mat-label>
+        <input matInput [value]="category_title" [readonly]="true">
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button type="submit" (click)="submit()" color="primary" *ngIf="mode !== 'view'">Save</button>
+    <button mat-raised-button (click)="modalService.close()">{{mode === 'view' ? 'Close' : 'Cancel'}}</button>
+  </div>
+</bs-modal>

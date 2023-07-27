@@ -26,7 +26,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
     errorInterceptorProvider,
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline', floatLabel: 'always' },
+      useValue: { appearance: 'outline' },
     },
   ],
   bootstrap: [AppComponent],

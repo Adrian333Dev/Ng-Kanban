@@ -45,7 +45,7 @@ export class CatergoryService {
     return this.http.post<{ message: string }>(this.apiUrl + 'create/', body);
   }
 
-  public update(id: number, body: UpdateCategory) {
+  public update({ id, ...body }: UpdateCategory) {
     return this.http.put<{ message: string }>(
       this.apiUrl + `update/${id}/`,
       body

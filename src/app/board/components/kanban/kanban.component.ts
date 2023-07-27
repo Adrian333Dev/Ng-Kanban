@@ -1,5 +1,5 @@
 import { Subject, BehaviorSubject } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   CdkDragDrop,
@@ -7,7 +7,6 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { takeUntil } from 'rxjs/operators';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { IColumn } from '../../models/column.interface';
 import { BoardService } from 'src/app/core/services/board.service';
@@ -15,11 +14,11 @@ import { CatergoryService } from 'src/app/core/services/catergory.service';
 import { Actions } from 'src/app/shared/models/maps/crud.map';
 import { IDotMenuItem } from 'src/app/shared/components/dot-menu/dot-menu.component';
 import { TaskModalComponent } from '../task-modal/task-modal.component';
-import { ICategory } from '../../models/category.types';
+import { ICategory, UpdateCategory } from '../../models/category.types';
 import { ItemService } from 'src/app/core/services/item.service';
-import { PromptModalComponent } from 'src/app/shared/components/prompt-modal/prompt-modal.component';
 import { menuItems } from '../../constants';
-import { BsModalService } from 'src/app/shared/services/bs-modal.service';
+import { CreateItem } from '../../models/item.types';
+import { EditCategoryModalComponent } from '../edit-category-modal/edit-category-modal.component';
 
 @Component({
   selector: 'app-kanban',
@@ -35,13 +34,14 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   public menuItems = menuItems;
 
+  @ViewChild('taskModal') taskModal: TaskModalComponent;
+  @ViewChild('editCategoryModal') editCategoryModal: EditCategoryModalComponent;
+
   constructor(
     private fb: FormBuilder,
     private boardService: BoardService,
     private categoryService: CatergoryService,
-    private itemService: ItemService,
-    public dialog: MatDialog,
-    protected modalService: BsModalService
+    private itemService: ItemService
   ) {}
 
   onDrop(event: CdkDragDrop<IColumn[]>) {
@@ -79,6 +79,15 @@ export class KanbanComponent implements OnInit, OnDestroy {
     } else this.categoryForm.markAllAsTouched();
   }
 
+  onSubmitEditCategory(category: UpdateCategory) {
+    this.categoryService
+      .update(category)
+      .pipe(takeUntil(this.unSub))
+      .subscribe((res) => {
+        this.boardService.init();
+      });
+  }
+
   onCancelCategory() {
     this.categoryForm.reset();
     this.creatingCategory = false;
@@ -88,25 +97,30 @@ export class KanbanComponent implements OnInit, OnDestroy {
     this.creatingCategory = false;
     switch (action) {
       case 'delete':
-        const dialogRef = this.dialog.open(PromptModalComponent, {
-          width: '400px',
-          data: {
-            header: 'Delete Category',
-            message: 'Are you sure you want to delete this category?',
-            mode: 'delete',
-          },
-        });
-        dialogRef.afterClosed().subscribe((res) => {
-          if (res)
-            this.categoryService
-              .delete(id)
-              .pipe(takeUntil(this.unSub))
-              .subscribe((res) => this.boardService.init());
-        });
+        this.handleCategoryDelete(id);
         break;
       case 'update':
+        this.handleCategoryEdit(id);
         break;
     }
+  }
+
+  handleCategoryDelete(id: any) {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this category?'
+    );
+    if (confirm)
+      this.categoryService
+        .delete(id)
+        .pipe(takeUntil(this.unSub))
+        .subscribe((res) => this.boardService.init());
+  }
+
+  handleCategoryEdit(id: string) {
+    this.editCategoryModal.category = this.categories.value.find(
+      (category) => category.id === id
+    );
+    this.editCategoryModal.open();
   }
 
   ngOnInit(): void {
@@ -128,44 +142,26 @@ export class KanbanComponent implements OnInit, OnDestroy {
   }
 
   openTaskDialog(action: Actions, item?: unknown) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '450px';
-    dialogConfig.data = { header: '', item: {} };
-
     switch (action) {
       case 'create':
-        (dialogConfig.data.header = 'Create Task'),
-          (dialogConfig.data.item.category_id = item),
-          (dialogConfig.data.categories = this.categories.value);
+        this.taskModal.header = 'Create Task';
+        this.taskModal.task = { category_id: item } as any;
+        this.taskModal.categories = this.categories.value;
+        this.taskModal.mode = 'create';
+        this.taskModal.open();
         break;
       case 'update':
-        dialogConfig.data = { header: 'Update Task', item };
         break;
       case 'view':
-        dialogConfig.data = { header: 'Task Details', item };
         break;
     }
-
-    const taskDialogRef = this.dialog.open(TaskModalComponent, dialogConfig);
-
-    taskDialogRef.afterClosed().subscribe((res) => {
-      if (res) {
-        switch (action) {
-          case 'create':
-            this.itemService.create(res).subscribe((res) => {
-              this.boardService.init();
-            });
-            break;
-          case 'update':
-            // this.boardService.update(res.id, res);
-            break;
-          case 'delete':
-            // this.boardService.delete(res.id);
-            break;
-        }
-      }
-    });
   }
+
+  onSubmitCreateTask(task: CreateItem) {
+    this.itemService.create(task).subscribe((res) => this.boardService.init());
+  }
+
+  onSubmitUpdateTask(task: CreateItem) {}
 
   ngOnDestroy() {
     this.unSub.next();

@@ -1,17 +1,10 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { IItem } from '../../models/item.types';
 import { ICategory } from '../../models/category.types';
 import { TaskModalMode } from 'src/app/shared/models/maps/modal-modes.map';
-
-interface DialogData {
-  item: IItem;
-  header: string;
-  categories: ICategory[];
-  mode: TaskModalMode;
-}
+import { BsModalService } from 'src/app/shared/services/bs-modal.service';
 
 @Component({
   selector: 'app-task-modal',
@@ -19,25 +12,17 @@ interface DialogData {
   styleUrls: ['./task-modal.component.scss'],
 })
 export class TaskModalComponent {
+  public header: string = 'Add Task';
+  public task: IItem = {} as IItem;
+  public categories: ICategory[] = [];
+  public mode: TaskModalMode = 'create';
+
   public form: FormGroup;
-  public categories: ICategory[];
 
   public dropdownFields = {
     value: 'id',
     text: 'category_title',
   } as any;
-
-  public get mode() {
-    return this.data.mode;
-  }
-
-  public get header() {
-    return this.data.header;
-  }
-
-  public get task() {
-    return this.data.item ?? ({} as IItem);
-  }
 
   public get category_title() {
     return this.categories.find(
@@ -46,29 +31,32 @@ export class TaskModalComponent {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<TaskModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    protected modalService: BsModalService,
     private fb: FormBuilder
   ) {}
 
-  submit(): void {
-    if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
-      this.form.reset();
-    } else {
-      this.form.markAllAsTouched();
-    }
+  open(): void {
+    this.modalService.open('task-modal');
+    this.initForm();
   }
 
-  cancel(): void {
-    this.dialogRef.close();
+  close(): void {
+    this.modalService.close();
   }
+
+  submit(): void {}
+
+  cancel(): void {}
   ngOnInit() {
-    this.categories = this.data.categories ?? [];
+    this.initForm();
+  }
+
+  initForm() {
+    const { item_title, item_description, category_id } = this.task;
     this.form = this.fb.group({
-      item_title: [this.data.item?.item_title ?? '', [Validators.required]],
-      item_description: [this.data.item?.item_description ?? ''],
-      category_id: [this.data.item?.category_id ?? '', [Validators.required]],
+      item_title: [item_title, Validators.required],
+      item_description,
+      category_id: [category_id, Validators.required],
     });
   }
 }

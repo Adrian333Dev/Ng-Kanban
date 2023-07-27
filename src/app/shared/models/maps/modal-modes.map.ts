@@ -14,3 +14,10 @@ const TaskModalMode = {
 } as const;
 
 export type TaskModalMode = ValuesOf<typeof TaskModalMode>;
+
+const CategoryModalMode = {
+  UPDATE: 'update',
+  VIEW: 'view',
+} as const;
+
+export type CategoryModalMode = ValuesOf<typeof CategoryModalMode>;
