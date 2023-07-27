@@ -12,7 +12,7 @@ import { UserResponse } from './models/user.types';
 import { UserService } from '../core/services/user.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { SelectionModel } from '@angular/cdk/collections';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -22,28 +22,17 @@ import { SelectionModel } from '@angular/cdk/collections';
 export class UserComponent implements OnInit, OnDestroy, AfterViewInit {
   public users = new BehaviorSubject<UserResponse[]>([]);
   public dataSource = new MatTableDataSource<UserResponse>();
-  public selection = new SelectionModel<UserResponse>(true, []);
   private unSub = new Subject<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ['select', 'id', 'username'];
+  displayedColumns: string[] = ['id', 'username'];
 
-  constructor(private userService: UserService) {}
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-  }
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.userService
@@ -59,8 +48,14 @@ export class UserComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  test(args: any) {
-    console.log(args);
+  onRowClick(row: UserResponse) {
+    this.router.navigate([row.id], { relativeTo: this.route });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
   ngAfterViewInit() {
