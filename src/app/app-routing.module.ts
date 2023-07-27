@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { loginGuard } from './core/guards/login.guard';
 import { LogInComponent } from './auth/components/log-in/log-in.component';
 import { RegisterComponent } from './auth/components/register/register.component';
+import { usersResolver } from './core/resolvers/users.resolver';
 
 const routes: Routes = [
   {
@@ -26,12 +27,18 @@ const routes: Routes = [
     path: 'user',
     canActivate: [authGuard],
     loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
+    resolve: {
+      users: usersResolver,
+    },
   },
   {
     path: 'profile',
     canActivate: [authGuard],
     loadChildren: () =>
       import('./profile/profile.module').then((m) => m.ProfileModule),
+    resolve: {
+      users: usersResolver,
+    },
   },
   {
     path: '**',

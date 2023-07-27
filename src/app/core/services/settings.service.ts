@@ -15,6 +15,10 @@ export class SettingsService {
     return this._currentUser.value;
   }
 
+  public get usernameFromStorage() {
+    return localStorage.getItem('username');
+  }
+
   public get currentUserId() {
     return this.currentUser.id;
   }

@@ -10,6 +10,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { DotMenuComponent } from './components/dot-menu/dot-menu.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 import { PromptModalComponent } from './components/prompt-modal/prompt-modal.component';
+import { BsModalComponent } from './components/bs-modal/bs-modal.component';
 
 const components = [
   InputComponent,
@@ -17,10 +18,11 @@ const components = [
   DotMenuComponent,
   DropdownComponent,
   PromptModalComponent,
+  BsModalComponent,
 ];
 
 @NgModule({
-  declarations: [...components],
+  declarations: [...components, BsModalComponent],
   imports: [
     CommonModule,
     MaterialModule,

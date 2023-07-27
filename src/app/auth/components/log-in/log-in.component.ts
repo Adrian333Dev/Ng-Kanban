@@ -31,9 +31,14 @@ export class LogInComponent implements OnInit {
   public onSubmit(): void {
     if (this.form.valid)
       this.authService.login(this.form.value).subscribe((res) => {
-        console.log('Login res: ', res);
+        // console.log('Login res: ', res);
+        this.saveUser(this.form.value.username);
         this.router.navigate(['/']);
       });
     else this.form.markAllAsTouched();
+  }
+
+  public saveUser(username: string): void {
+    localStorage.setItem('username', username);
   }
 }

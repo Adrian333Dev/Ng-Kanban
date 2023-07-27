@@ -1,5 +1,17 @@
 <div class="kanban-board">
-
+  <button class="btn btn-primary me-2" (click)="modalService.open('modal-1')">Open Modal 1</button>
+  <!-- <bs-modal id="modal-1">
+    <div class="modal-header">
+      <h5 class="modal-title">Angular + Bootstrap Modal #1</h5>
+      <button type="button" class="btn-close" (click)="modalService.close();"></button>
+    </div>
+    <div class="modal-body">
+      <p>This bootstrap modal was opened with Angular!</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modalService.close()">Close</button>
+    </div>
+  </bs-modal> -->
   <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
     <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
       <h2>{{ column.category_title }}</h2>

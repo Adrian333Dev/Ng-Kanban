@@ -19,6 +19,7 @@ import { ICategory } from '../../models/category.types';
 import { ItemService } from 'src/app/core/services/item.service';
 import { PromptModalComponent } from 'src/app/shared/components/prompt-modal/prompt-modal.component';
 import { menuItems } from '../../constants';
+import { BsModalService } from 'src/app/shared/services/bs-modal.service';
 
 @Component({
   selector: 'app-kanban',
@@ -39,7 +40,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
     private boardService: BoardService,
     private categoryService: CatergoryService,
     private itemService: ItemService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    protected modalService: BsModalService
   ) {}
 
   onDrop(event: CdkDragDrop<IColumn[]>) {
