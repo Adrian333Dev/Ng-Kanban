@@ -8,6 +8,9 @@ import { SharedModule } from '../shared/shared.module';
 import { TaskModalComponent } from './components/task-modal/task-modal.component';
 import { TaskCardComponent } from './components/task-card/task-card.component';
 import { EditCategoryModalComponent } from './components/edit-category-modal/edit-category-modal.component';
+import { DragDropTestComponent } from './components/drag-drop-test/drag-drop-test.component';
+import { DragDropTestBoardComponent } from './components/drag-drop-test-board/drag-drop-test-board.component';
+import { CategoryCardComponent } from './components/category-card/category-card.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +19,9 @@ import { EditCategoryModalComponent } from './components/edit-category-modal/edi
     TaskModalComponent,
     TaskCardComponent,
     EditCategoryModalComponent,
+    DragDropTestComponent,
+    DragDropTestBoardComponent,
+    CategoryCardComponent,
   ],
   imports: [CommonModule, BoardRoutingModule, SharedModule],
 })

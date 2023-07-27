@@ -18,6 +18,7 @@ import { ItemService } from 'src/app/core/services/item.service';
 import { menuItems } from '../../constants';
 import { CreateItem, IItem, UpdateItem } from '../../models/item.types';
 import { EditCategoryModalComponent } from '../edit-category-modal/edit-category-modal.component';
+import { CategoryCardComponent } from '../category-card/category-card.component';
 
 @Component({
   selector: 'app-kanban',
@@ -25,7 +26,7 @@ import { EditCategoryModalComponent } from '../edit-category-modal/edit-category
   styleUrls: ['./kanban.component.scss'],
 })
 export class KanbanComponent implements OnInit, OnDestroy {
-  public columns = new BehaviorSubject<IColumn[]>([]);
+  // public columns = new BehaviorSubject<IColumn[]>([]);
   public categories = new BehaviorSubject<ICategory[]>([]);
   private unSub = new Subject<void>();
   public categoryForm: FormGroup;
@@ -36,34 +37,17 @@ export class KanbanComponent implements OnInit, OnDestroy {
   @ViewChild('taskModal') taskModal: TaskModalComponent;
   @ViewChild('editCategoryModal') editCategoryModal: EditCategoryModalComponent;
 
+  // ! Drag and Drop Start
+  public lists: CategoryCardComponent[] = [];
+  public columns: IColumn[] = [];
+  // ! Drag and Drop End
+
   constructor(
     private fb: FormBuilder,
     private boardService: BoardService,
     private categoryService: CatergoryService,
     private itemService: ItemService
   ) {}
-
-  onDrop(event: CdkDragDrop<IColumn[]>) {
-    moveItemInArray(
-      this.columns.value,
-      event.previousIndex,
-      event.currentIndex
-    );
-  }
-
-  onCardDrop(event: CdkDragDrop<any[]>, cards: any[]) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(cards, event.previousIndex, event.currentIndex);
-    } else {
-      const movedCard = cards[event.previousIndex];
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-  }
 
   onSubmitCategory() {
     if (this.categoryForm.valid) {
@@ -131,7 +115,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
       .onColumnsChange()
       .pipe(takeUntil(this.unSub))
       .subscribe((columns) => {
-        this.columns.next(columns);
+        this.columns = columns;
+        this.lists = columns.map((column) => new CategoryCardComponent());
       });
     this.boardService.init();
 

@@ -34,7 +34,6 @@ export class RegisterComponent implements OnInit {
   public onSubmit(): void {
     if (this.form.valid)
       this.authService.register(this.form.value).subscribe((res) => {
-        console.log('Register res: ', res);
         this.router.navigate(['/login']);
       });
     else this.form.markAllAsTouched();

@@ -1,0 +1,15 @@
+<div class="container">
+  <h3>{{category.category_title}}</h3>
+  <div class="list" cdkDropList [cdkDropListData]="tasks" (cdkDropListDropped)="drop($event)">
+    <mat-card class="list-item" *ngFor="let task of tasks" cdkDrag [cdkDragData]="task"
+      (dblclick)="handleViewTask(task)">
+      <mat-card-header>
+        <mat-card-title>{{ task.item_title }}</mat-card-title>
+        <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onMenuItemClick($event, task)"></app-dot-menu>
+      </mat-card-header>
+      <mat-card-content *ngIf="task.item_description">
+        <p>{{task.item_title}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

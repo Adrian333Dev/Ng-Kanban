@@ -1,0 +1,6 @@
+<button (click)="addList()" mat-raised-button color="primary">Add List</button>
+<div class="board-container">
+  <div class="list-container" cdkDropListGroup>
+    <drag-drop-test *ngFor="let list of lists"></drag-drop-test>
+  </div>
+</div>

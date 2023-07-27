@@ -69,3 +69,13 @@ app-dot-menu {
     }
   }
 }
+
+.kanban-board {
+  display: none !important;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}

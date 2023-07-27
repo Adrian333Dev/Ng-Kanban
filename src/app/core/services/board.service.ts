@@ -21,24 +21,46 @@ export class BoardService {
   }
 
   public init() {
+    // combineLatest([
+    //   this.categoryService.list().pipe(map(({ categories }) => categories)),
+    //   this.itemService.list().pipe(map(({ items }) => items)),
+    // ]).subscribe(([categories, items]) => {
+    //   if (!categories.length) return;
+    //   const columnsMap = categories.reduce((acc, category) => {
+    //     acc[category.id] = { ...category, tasks: [] };
+    //     return acc;
+    //   }, {});
+    //   if (items.length)
+    //     items.forEach((item) => {
+    //       if (columnsMap[item.category_id])
+    //         columnsMap[item.category_id].tasks.push(item);
+    //     });
+    //   const columns = Object.values(columnsMap) as IColumn[];
+    //   this.columns.next(columns);
+    // });
+
     combineLatest([
       this.categoryService.list().pipe(map(({ categories }) => categories)),
       this.itemService.list().pipe(map(({ items }) => items)),
     ]).subscribe(([categories, items]) => {
       if (!categories.length) return;
-      const columnsMap = categories.reduce((acc, category) => {
-        acc[category.id] = { ...category, tasks: [] };
+      const colsMap = categories.reduce((acc, category) => {
+        acc[category.id] = { category, tasks: [] };
         return acc;
       }, {});
-      // console.log(columnsMap, items);
       if (items.length)
         items.forEach((item) => {
-          if (columnsMap[item.category_id])
-            columnsMap[item.category_id].tasks.push(item);
+          if (colsMap[item.category_id])
+            colsMap[item.category_id].tasks.push(item);
         });
-      // console.log(columnsMap);
-      const columns = Object.values(columnsMap) as IColumn[];
-      this.columns.next(columns);
+      const cols = (Object.values(colsMap) as IColumn[]).sort(
+        (a, b) => a.category.order_id - b.category.order_id
+      );
+      cols.forEach(
+        (col) =>
+          (col.tasks = col.tasks.sort((a, b) => +a.order_id - +b.order_id))
+      );
+      this.columns.next(cols);
     });
   }
 }

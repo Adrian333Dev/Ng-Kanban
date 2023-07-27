@@ -1,4 +1,6 @@
-<div class="kanban-board">
+<!-- <drag-drop-test-board></drag-drop-test-board> -->
+
+<!-- <div class="kanban-board">
   <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
     <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
       <h3>{{ column.category_title }}</h3>
@@ -31,7 +33,31 @@
       </ng-template>
     </form>
   </div>
+</div> -->
+
+<div class="board-container">
+  <div class="list-container" cdkDropListGroup>
+    <app-category-card *ngFor="let col of lists; let i = index" [column]="columns[i]" [categories]="categories.value"></app-category-card>
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="category-form">
+      <ng-template #formContent [ngIf]="creatingCategory" [ngIfElse]="buttonContent">
+        <mat-form-field appearance="outline">
+          <input matInput placeholder="Category Title" formControlName="category_title">
+          <mat-error *ngIf="categoryForm.get('category_title').hasError('required')">
+            Category Title is required
+          </mat-error>
+        </mat-form-field>
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit">Add Category</button>
+          <button mat-mini-fab (click)="onCancelCategory()"><mat-icon>clear</mat-icon></button>
+        </div>
+      </ng-template>
+      <ng-template #buttonContent>
+        <button mat-raised-button color="primary" (click)="creatingCategory = true">New Category</button>
+      </ng-template>
+    </form>
+  </div>
 </div>
+
 
 <app-task-modal #taskModal (onSubmitted)="taskActionSubmit($event)"></app-task-modal>
 <app-edit-category-modal #editCategoryModal (onSubmitted)="onSubmitEditCategory($event)"></app-edit-category-modal>
