@@ -26,7 +26,6 @@ import { CategoryCardComponent } from '../category-card/category-card.component'
   styleUrls: ['./kanban.component.scss'],
 })
 export class KanbanComponent implements OnInit, OnDestroy {
-  // public columns = new BehaviorSubject<IColumn[]>([]);
   public categories = new BehaviorSubject<ICategory[]>([]);
   private unSub = new Subject<void>();
   public categoryForm: FormGroup;
@@ -40,6 +39,24 @@ export class KanbanComponent implements OnInit, OnDestroy {
   // ! Drag and Drop Start
   public lists: CategoryCardComponent[] = [];
   public columns: IColumn[] = [];
+
+  drop(event: CdkDragDrop<IItem[]>) {
+    console.log('event: ', event);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
   // ! Drag and Drop End
 
   constructor(
@@ -50,16 +67,14 @@ export class KanbanComponent implements OnInit, OnDestroy {
   ) {}
 
   onSubmitCategory() {
-    if (this.categoryForm.valid) {
-      this.categoryService
-        .create(this.categoryForm.value)
-        .pipe(takeUntil(this.unSub))
-        .subscribe((res) => {
-          this.boardService.init();
-          this.onCancelCategory();
-          this.boardService.init();
-        });
-    } else this.categoryForm.markAllAsTouched();
+    this.categoryService
+      .create(this.categoryForm.value)
+      .pipe(takeUntil(this.unSub))
+      .subscribe((res) => {
+        this.boardService.init();
+        this.onCancelCategory();
+        this.boardService.init();
+      });
   }
 
   onSubmitEditCategory(category: UpdateCategory) {
@@ -76,7 +91,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
     this.creatingCategory = false;
   }
 
-  onCategoryMenuItemClick(action: Actions, id: any) {
+  onCategoryMenuItemClick({ action, id }: { action: Actions; id: any }) {
     this.creatingCategory = false;
     switch (action) {
       case 'delete':
@@ -125,8 +140,15 @@ export class KanbanComponent implements OnInit, OnDestroy {
     });
   }
 
-  taskAction({ action, item }: { action: Actions; item?: unknown }) {
+  taskAction({ action, item }: { action: Actions; item: unknown }) {
     switch (action) {
+      case 'create':
+        this.taskModal.header = 'Create Task';
+        this.taskModal.task = { category_id: item } as any;
+        this.taskModal.categories = this.categories.value;
+        this.taskModal.mode = 'create';
+        this.taskModal.open();
+        break;
       case 'update':
         this.taskModal.header = 'Update Task';
         this.taskModal.task = item as IItem;
@@ -145,7 +167,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
         const confirm = window.confirm(
           'Are you sure you want to delete this task?'
         );
-        if (confirm) this.onConfirmDeleteTask(item as string);
+        if (confirm) this.onConfirmDeleteTask((item as IItem).id as string);
     }
   }
 
@@ -158,14 +180,6 @@ export class KanbanComponent implements OnInit, OnDestroy {
         this.onSubmitUpdateTask(task);
         break;
     }
-  }
-
-  onCreateTask(category_id: string) {
-    this.taskModal.header = 'Create Task';
-    this.taskModal.task = { category_id } as any;
-    this.taskModal.categories = this.categories.value;
-    this.taskModal.mode = 'create';
-    this.taskModal.open();
   }
 
   onSubmitCreateTask(task: CreateItem) {

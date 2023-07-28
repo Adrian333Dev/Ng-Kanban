@@ -70,12 +70,21 @@ app-dot-menu {
   }
 }
 
-.kanban-board {
-  display: none !important;
+button {
+  margin: 10px;
 }
 
 .list-container {
   display: flex;
-  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   margin: 10px;
+
+  app-category-card {
+    width: 300px;
+  }
+}
+
+.category-form {
+  padding: 0px;
 }

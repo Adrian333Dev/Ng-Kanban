@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -10,21 +10,28 @@ import { IItem } from '../../models/item.types';
 import { menuItems } from '../../constants';
 import { Actions } from 'src/app/shared/models/maps/crud.map';
 import { IColumn } from '../../models/column.interface';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-category-card',
   templateUrl: './category-card.component.html',
   styleUrls: ['./category-card.component.scss'],
 })
-export class CategoryCardComponent {
+export class CategoryCardComponent implements OnInit {
   @Input() column: IColumn;
   @Input() categories: ICategory[];
   @Input() index: number;
-  // @Input() tasks: IItem[];
-  @Output() onMenuClick = new EventEmitter<{
+  @Output() onTaskAction = new EventEmitter<{
     action: Actions;
-    item?: unknown;
+    item: unknown;
   }>();
+  @Output() onCategoryMenuClick = new EventEmitter<{
+    action: Actions;
+    id: any;
+  }>();
+
+  public categoryForm: FormGroup;
+
   public menuItems = menuItems;
 
   get tasks() {
@@ -38,7 +45,7 @@ export class CategoryCardComponent {
   constructor() {}
 
   drop(event: CdkDragDrop<IItem[]>) {
-    console.log('event: ', event);
+    // console.log('event: ', event);
     const item = event.item.data;
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -56,18 +63,21 @@ export class CategoryCardComponent {
     }
   }
 
-  onMenuItemClick(action: Actions, task: IItem) {
-    switch (action) {
-      case 'update':
-        this.onMenuClick.emit({ action, item: task });
-        break;
-      case 'delete':
-        this.onMenuClick.emit({ action, item: task.id });
-        break;
-    }
+  ngOnInit(): void {}
+
+  onCategoryMenuItemClick(action: Actions) {
+    this.onCategoryMenuClick.emit({ action, id: this.category.id });
   }
 
   handleViewTask(task: IItem) {
-    this.onMenuClick.emit({ action: 'view', item: task });
+    this.onTaskAction.emit({ action: 'view', item: task });
+  }
+
+  handleAddTask() {
+    this.onTaskAction.emit({ action: 'create', item: this.category.id });
+  }
+
+  onTaskMenuItemClick(action: Actions, task: IItem) {
+    this.onTaskAction.emit({ action, item: task });
   }
 }

@@ -1,15 +1,21 @@
 <div class="container">
-  <h3>{{category.category_title}}</h3>
   <div class="list" cdkDropList [cdkDropListData]="tasks" (cdkDropListDropped)="drop($event)">
-    <mat-card class="list-item" *ngFor="let task of tasks" cdkDrag [cdkDragData]="task"
-      (dblclick)="handleViewTask(task)">
+    <div class="category-header">
+      <h3>{{category.category_title}}</h3>
+      <app-dot-menu [menuItems]="menuItems" (menuItemClick)="onCategoryMenuItemClick($event)"></app-dot-menu>
+    </div>
+    <mat-card class="list-item" *ngFor="let task of tasks" cdkDrag (dblclick)="handleViewTask(task)">
+      <app-dot-menu [menuItems]="menuItems" (menuItemClick)="onTaskMenuItemClick($event, task)"></app-dot-menu>
       <mat-card-header>
-        <mat-card-title>{{ task.item_title }}</mat-card-title>
-        <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onMenuItemClick($event, task)"></app-dot-menu>
+        <mat-card-title>{{task.item_title}}</mat-card-title>
       </mat-card-header>
       <mat-card-content *ngIf="task.item_description">
-        <p>{{task.item_title}}</p>
+        <mat-card-subtitle>{{task.item_description}}</mat-card-subtitle>
       </mat-card-content>
     </mat-card>
+    <div class="actions">
+      <button mat-mini-fab class="add_task-btn" (click)="handleAddTask()">
+        <mat-icon>add</mat-icon></button>
+    </div>
   </div>
 </div>

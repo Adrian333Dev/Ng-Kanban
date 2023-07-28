@@ -1,63 +1,27 @@
-<!-- <drag-drop-test-board></drag-drop-test-board> -->
+<div class="list-container" cdkDropListGroup>
+  <app-category-card *ngFor="let list of lists; let i = index" [column]="columns[i]"
+    (onCategoryMenuClick)="onCategoryMenuItemClick($event)" [index]="i"
+    (onTaskAction)="taskAction($event)"></app-category-card>
 
-<!-- <div class="kanban-board">
-  <div class="kanban-columns" cdkDropList [cdkDropListData]="columns.value" (cdkDropListDropped)="onDrop($event)">
-    <div class="kanban-column" *ngFor="let column of columns.value" cdkDrag [cdkDragData]="column">
-      <h3>{{ column.category_title }}</h3>
-      <app-dot-menu [menuItems]='menuItems' (menuItemClick)="onCategoryMenuItemClick($event, column.id)"></app-dot-menu>
-      <div class="kanban-cards" cdkDropList [cdkDropListData]="column.tasks"
-        (cdkDropListDropped)="onCardDrop($event, column.tasks)">
-        <app-task-card *ngFor="let card of column.tasks" [task]="card" cdkDrag [cdkDragData]="card"
-          [categories]="categories.value" (onMenuClick)="taskAction($event)"></app-task-card>
-      </div>
+  <!-- ADD Catergory Form -->
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="category-form">
+    <ng-template #formContent [ngIf]="creatingCategory" [ngIfElse]="buttonContent">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Category Title" formControlName="category_title">
+        <mat-error *ngIf="categoryForm.get('category_title').hasError('required')">
+          Category Title is required
+        </mat-error>
+      </mat-form-field>
       <div class="actions">
-        <button mat-mini-fab class="add_task-btn" (click)="onCreateTask(column.id)">
-          <mat-icon>add</mat-icon></button>
+        <button mat-raised-button color="primary" type="submit">Add Category</button>
+        <button mat-mini-fab (click)="onCancelCategory()"><mat-icon>clear</mat-icon></button>
       </div>
-    </div>
-    <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="category-form">
-      <ng-template #formContent [ngIf]="creatingCategory" [ngIfElse]="buttonContent">
-        <mat-form-field appearance="outline">
-          <input matInput placeholder="Category Title" formControlName="category_title">
-          <mat-error *ngIf="categoryForm.get('category_title').hasError('required')">
-            Category Title is required
-          </mat-error>
-        </mat-form-field>
-        <div class="actions">
-          <button mat-raised-button color="primary" type="submit">Add Category</button>
-          <button mat-mini-fab (click)="onCancelCategory()"><mat-icon>clear</mat-icon></button>
-        </div>
-      </ng-template>
-      <ng-template #buttonContent>
-        <button mat-raised-button color="primary" (click)="creatingCategory = true">New Category</button>
-      </ng-template>
-    </form>
-  </div>
-</div> -->
-
-<div class="board-container">
-  <div class="list-container" cdkDropListGroup>
-    <app-category-card *ngFor="let col of lists; let i = index" [column]="columns[i]" [categories]="categories.value"></app-category-card>
-    <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="category-form">
-      <ng-template #formContent [ngIf]="creatingCategory" [ngIfElse]="buttonContent">
-        <mat-form-field appearance="outline">
-          <input matInput placeholder="Category Title" formControlName="category_title">
-          <mat-error *ngIf="categoryForm.get('category_title').hasError('required')">
-            Category Title is required
-          </mat-error>
-        </mat-form-field>
-        <div class="actions">
-          <button mat-raised-button color="primary" type="submit">Add Category</button>
-          <button mat-mini-fab (click)="onCancelCategory()"><mat-icon>clear</mat-icon></button>
-        </div>
-      </ng-template>
-      <ng-template #buttonContent>
-        <button mat-raised-button color="primary" (click)="creatingCategory = true">New Category</button>
-      </ng-template>
-    </form>
-  </div>
+    </ng-template>
+    <ng-template #buttonContent>
+      <button mat-raised-button color="primary" (click)="creatingCategory = true">New Category</button>
+    </ng-template>
+  </form>
 </div>
-
 
 <app-task-modal #taskModal (onSubmitted)="taskActionSubmit($event)"></app-task-modal>
 <app-edit-category-modal #editCategoryModal (onSubmitted)="onSubmitEditCategory($event)"></app-edit-category-modal>
