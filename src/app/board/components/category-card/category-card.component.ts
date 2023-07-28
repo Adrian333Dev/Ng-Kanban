@@ -10,7 +10,8 @@ import { IItem } from '../../models/item.types';
 import { menuItems } from '../../constants';
 import { Actions } from 'src/app/shared/models/maps/crud.map';
 import { IColumn } from '../../models/column.interface';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { ItemService } from 'src/app/core/services/item.service';
 
 @Component({
   selector: 'app-category-card',
@@ -29,6 +30,10 @@ export class CategoryCardComponent implements OnInit {
     action: Actions;
     id: any;
   }>();
+  @Output() handleDropEvent = new EventEmitter<{
+    idxToStartReorderFrom: number;
+    categoryIdx: number;
+  }>();
 
   public categoryForm: FormGroup;
 
@@ -44,7 +49,7 @@ export class CategoryCardComponent implements OnInit {
 
   constructor() {}
 
-  drop(event: CdkDragDrop<IItem[]>) {
+  drop(event: CdkDragDrop<IItem[]>, category?: ICategory) {
     // console.log('event: ', event);
     const item = event.item.data;
     if (event.previousContainer === event.container) {
@@ -53,6 +58,10 @@ export class CategoryCardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+      this.handleDropEvent.emit({
+        idxToStartReorderFrom: event.currentIndex,
+        categoryIdx: this.index,
+      });
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -60,6 +69,10 @@ export class CategoryCardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+      this.handleDropEvent.emit({
+        idxToStartReorderFrom: event.currentIndex,
+        categoryIdx: this.index,
+      });
     }
   }
 

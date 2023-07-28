@@ -18,6 +18,8 @@
   overflow: hidden;
   min-height: 100px;
   position: relative;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .cdk-drag-preview {
@@ -65,6 +67,9 @@ mat-card-header {
   margin-bottom: 6px;
   mat-card-title {
     font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

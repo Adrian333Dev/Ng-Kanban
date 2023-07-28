@@ -6,7 +6,7 @@ export interface IItem {
   item_id: string;
   item_title: string;
   item_description: string;
-  order_id: string;
+  order_id: number;
   created_date: string | Date;
   owner_id: string;
   category_id: string;
@@ -23,4 +23,7 @@ export type CreateItem = Pick<IItem, 'item_title' | 'item_description'> & {
   category_id: string;
 };
 
-export type UpdateItem = Partial<CreateItem & { item_id: string }>;
+export type UpdateItem = Pick<
+  IItem,
+  'item_title' | 'item_description' | 'order_id' | 'category_id'
+>;

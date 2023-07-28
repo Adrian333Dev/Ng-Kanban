@@ -1,11 +1,6 @@
 import { Subject, BehaviorSubject } from 'rxjs';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
 import { takeUntil } from 'rxjs/operators';
 
 import { IColumn } from '../../models/column.interface';
@@ -40,23 +35,22 @@ export class KanbanComponent implements OnInit, OnDestroy {
   public lists: CategoryCardComponent[] = [];
   public columns: IColumn[] = [];
 
-  drop(event: CdkDragDrop<IItem[]>) {
-    console.log('event: ', event);
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+  handleDrop({
+    idxToStartReorderFrom,
+    categoryIdx,
+  }: {
+    idxToStartReorderFrom: number;
+    categoryIdx: number;
+  }) {
+    const category = this.categories.value[categoryIdx];
+    const items = this.columns[categoryIdx].tasks;
+    for (let i = idxToStartReorderFrom; i < items.length; i++) {
+      const item = items[i];
+      console.log(`item ${i} - order_id: ${i}`, item);
+      this.onSubmitUpdateTask({ ...item, order_id: i + 1 });
     }
   }
+
   // ! Drag and Drop End
 
   constructor(
@@ -189,7 +183,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
   onSubmitUpdateTask(task: Partial<IItem>) {
     const { id, item_id, ...body } = task;
     this.itemService
-      .update(task.id, body as UpdateItem)
+      .update(id, body as UpdateItem)
+      .pipe(takeUntil(this.unSub))
       .subscribe((res) => this.boardService.init());
   }
 
