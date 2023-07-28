@@ -122,32 +122,33 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   onSubmitEditCategory({
     category,
-    reorderIdx,
+    fromIdx,
+    toIdx,
   }: {
     category: UpdateCategory;
-    reorderIdx: number;
+    fromIdx: number;
+    toIdx: number;
   }) {
-    // this.categoryService
-    //   .update(category)
-    //   .pipe(takeUntil(this.unSub))
-    //   .subscribe((res) => {
-    //     this.boardService.init();
-    //   });
-
-    const reorder = category.order_id !== reorderIdx;
-    const prevCol = this.columns[reorderIdx - 1];
-    const { id, category_title } = prevCol.category;
-    return combineLatest([
-      this.categoryService.update(category),
-      reorder &&
-        this.categoryService.update({
-          id,
-          category_title,
-          order_id: category.order_id,
-        }),
-    ])
-      .pipe(takeUntil(this.unSub))
-      .subscribe(() => this.boardService.init());
+    const order_changed = fromIdx !== toIdx;
+    if (order_changed) {
+      const categoryInNewOrder = this.columns[toIdx - 1].category;
+      const { id, category_title } = categoryInNewOrder;
+      // update the category in the new order to the old order
+      this.categoryService
+        .update({ id, category_title, order_id: fromIdx })
+        .pipe(takeUntil(this.unSub))
+        .subscribe((res) => {
+          // update the category in the old order to the new order
+          this.categoryService
+            .update({ ...category, order_id: toIdx })
+            .pipe(takeUntil(this.unSub))
+            .subscribe((res) => this.boardService.init());
+        });
+    } else
+      this.categoryService
+        .update(category)
+        .pipe(takeUntil(this.unSub))
+        .subscribe((res) => this.boardService.init());
   }
 
   onCancelCategory() {

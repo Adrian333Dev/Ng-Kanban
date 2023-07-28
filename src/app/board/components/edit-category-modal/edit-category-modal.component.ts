@@ -11,7 +11,8 @@ import { BsModalService } from 'src/app/shared/services/bs-modal.service';
 export class EditCategoryModalComponent {
   @Output() onSubmitted = new EventEmitter<{
     category: UpdateCategory;
-    reorderIdx: number;
+    fromIdx: number;
+    toIdx: number;
   }>();
   public category: ICategory = {} as ICategory;
   public order: number;
@@ -35,10 +36,12 @@ export class EditCategoryModalComponent {
 
   submit(): void {
     if (this.form.invalid) return this.form.markAllAsTouched();
-    const { id } = this.category;
+    const { category_title, order_id } = this.form.value;
+    const { category_id, id } = this.category;
     this.onSubmitted.emit({
-      category: { ...this.form.value, id },
-      reorderIdx: this.order,
+      category: { id, category_title, order_id },
+      fromIdx: this.category.order_id,
+      toIdx: order_id,
     });
     this.close();
   }
