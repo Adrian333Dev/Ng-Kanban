@@ -1,5 +1,5 @@
 <div class="list-container" cdkDropListGroup>
-  <app-category-card *ngFor="let list of lists; let i = index" [column]="columns[i]"
+  <app-category-card class="list-item" *ngFor="let list of lists; let i = index" [column]="columns[i]"
     (onCategoryMenuClick)="onCategoryMenuItemClick($event)" [index]="i" (onTaskAction)="taskAction($event)"
     (handleDropInSameCategory)="handleDropInSameCategory($event)"
     (handleDropInDifferentCategory)="handleDropInDifferentCategory($event)"></app-category-card>

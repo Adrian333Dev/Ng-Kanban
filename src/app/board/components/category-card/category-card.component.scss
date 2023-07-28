@@ -1,5 +1,5 @@
 .container {
-  margin-right: 10px;
+  padding-left: 0;
 }
 
 .container button {
@@ -8,7 +8,7 @@
 
 .list {
   padding: 10px;
-  padding-bottom: 50px;
+  // padding-bottom: 50px;
   max-width: 100%;
   border: solid 1px #ccc;
   min-height: 60px;
@@ -18,7 +18,7 @@
   overflow: hidden;
   min-height: 100px;
   position: relative;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
 
@@ -81,9 +81,9 @@ mat-card-subtitle {
 }
 
 .actions {
-  position: absolute;
-  padding-inline: 3px;
-  bottom: 8px;
-  right: 10px;
-  left: 10px;
+  // position: absolute;
+  // padding-inline: 3px;
+  // bottom: 8px;
+  // right: 10px;
+  // left: 10px;
 }
