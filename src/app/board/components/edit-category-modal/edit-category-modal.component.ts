@@ -9,8 +9,13 @@ import { BsModalService } from 'src/app/shared/services/bs-modal.service';
   styleUrls: ['./edit-category-modal.component.scss'],
 })
 export class EditCategoryModalComponent {
-  @Output() onSubmitted = new EventEmitter<UpdateCategory>();
+  @Output() onSubmitted = new EventEmitter<{
+    category: UpdateCategory;
+    reorderIdx: number;
+  }>();
   public category: ICategory = {} as ICategory;
+  public order: number;
+  public max: number;
   public form: FormGroup;
 
   constructor(
@@ -30,8 +35,11 @@ export class EditCategoryModalComponent {
 
   submit(): void {
     if (this.form.invalid) return this.form.markAllAsTouched();
-    const { order_id, id } = this.category;
-    this.onSubmitted.emit({ ...this.form.value, id, order_id });
+    const { id } = this.category;
+    this.onSubmitted.emit({
+      category: { ...this.form.value, id },
+      reorderIdx: this.order,
+    });
     this.close();
   }
 
@@ -40,9 +48,13 @@ export class EditCategoryModalComponent {
   }
 
   initForm() {
-    const { category_title } = this.category;
+    const { category_title, order_id } = this.category;
     this.form = this.fb.group({
       category_title: [category_title, Validators.required],
+      order_id: [
+        order_id,
+        [Validators.required, Validators.min(1), Validators.max(this.max)],
+      ],
     });
   }
 }

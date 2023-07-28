@@ -40,6 +40,7 @@ import {
   DragDropModule,
 } from '@angular/cdk/drag-drop';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSliderModule } from '@angular/material/slider';
 
 const materialModules = [
   CdkTreeModule,
@@ -80,6 +81,7 @@ const materialModules = [
   CdkDropList,
   CdkDrag,
   MatDialogModule,
+  MatSliderModule,
 ];
 
 @NgModule({

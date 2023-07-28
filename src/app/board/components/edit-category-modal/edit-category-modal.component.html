@@ -6,6 +6,13 @@
   <div class="modal-body">
     <form class="task-form" [formGroup]="form" (ngSubmit)="submit()">
       <app-input [form]="form" label="Title" placeholder="To Do" field="category_title"></app-input>
+      <!-- Custom Range -->
+      <div class="order">
+      <label>Order</label>
+      <mat-slider min="1" [max]="max" step="1" showTickMarks discrete thumbLabel>
+        <input matSliderThumb formControlName="order_id" type="range" min="1" [max]="max" step="1" />
+      </mat-slider>
+      </div>
     </form>
   </div>
   <div class="modal-footer">

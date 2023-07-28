@@ -43,20 +43,13 @@ export class KanbanComponent implements OnInit, OnDestroy {
     categoryIdx: number;
   }) {
     const items = this.columns[categoryIdx].tasks;
-    // for (let i = idxToStartReorderFrom; i < items.length; i++) {
-    //   const { id, item_id, ...body } = items[i];
-    //   this.itemService
-    //     .update(id, { ...body, order_id: i + 1 })
-    //     .pipe(takeUntil(this.unSub))
-    //     .subscribe();
-    // }
 
     combineLatest(
       items.slice(idxToStartReorderFrom).map((item, i) => {
         const { id, item_id, ...body } = item;
         return this.itemService.update(id, {
           ...body,
-          order_id: i + 1,
+          order_id: i + idxToStartReorderFrom + 1,
         });
       })
     )
@@ -106,6 +99,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unSub))
       .subscribe(() => this.boardService.init());
   }
+
   // ! Drag and Drop End
 
   constructor(
@@ -126,13 +120,34 @@ export class KanbanComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSubmitEditCategory(category: UpdateCategory) {
-    this.categoryService
-      .update(category)
+  onSubmitEditCategory({
+    category,
+    reorderIdx,
+  }: {
+    category: UpdateCategory;
+    reorderIdx: number;
+  }) {
+    // this.categoryService
+    //   .update(category)
+    //   .pipe(takeUntil(this.unSub))
+    //   .subscribe((res) => {
+    //     this.boardService.init();
+    //   });
+
+    const reorder = category.order_id !== reorderIdx;
+    const prevCol = this.columns[reorderIdx - 1];
+    const { id, category_title } = prevCol.category;
+    return combineLatest([
+      this.categoryService.update(category),
+      reorder &&
+        this.categoryService.update({
+          id,
+          category_title,
+          order_id: category.order_id,
+        }),
+    ])
       .pipe(takeUntil(this.unSub))
-      .subscribe((res) => {
-        this.boardService.init();
-      });
+      .subscribe(() => this.boardService.init());
   }
 
   onCancelCategory() {
@@ -164,9 +179,14 @@ export class KanbanComponent implements OnInit, OnDestroy {
   }
 
   handleCategoryEdit(id: string) {
-    this.editCategoryModal.category = this.categories.value.find(
-      (category) => category.id === id
+    const colIdx = this.columns.findIndex(
+      (column) => column.category.id === id
     );
+    const col = this.columns[colIdx];
+    this.editCategoryModal.category = col.category;
+    this.editCategoryModal.order = colIdx + 1;
+    this.editCategoryModal.max = this.columns.length;
+
     this.editCategoryModal.open();
   }
 
@@ -191,6 +211,12 @@ export class KanbanComponent implements OnInit, OnDestroy {
         console.log(`category_id: ${id} - category_title: ${category_title}`);
       }
     });
+
+    // combineLatest(
+    //   this.columns.map(({ category: { id, category_title } }, i) =>
+    //     this.categoryService.update({ id, category_title, order_id: i + 1 })
+    //   )
+    // ).subscribe();
   }
 
   taskAction({ action, item }: { action: Actions; item: unknown }) {
