@@ -37,6 +37,7 @@ export class ItemService {
   }
 
   public update(id: string, body: UpdateItem) {
+    console.log('body', body);
     return this.http.put<{ message: string }>(
       this.apiUrl + `update/${id}/`,
       body

@@ -37,7 +37,7 @@ export class EditCategoryModalComponent {
   submit(): void {
     if (this.form.invalid) return this.form.markAllAsTouched();
     const { category_title, order_id } = this.form.value;
-    const { category_id, id } = this.category;
+    const { id } = this.category;
     this.onSubmitted.emit({
       category: { id, category_title, order_id },
       fromIdx: this.category.order_id,
