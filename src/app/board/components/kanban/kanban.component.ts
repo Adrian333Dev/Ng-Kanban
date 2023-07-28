@@ -1,7 +1,7 @@
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, combineLatestAll } from 'rxjs/operators';
 
 import { IColumn } from '../../models/column.interface';
 import { BoardService } from 'src/app/core/services/board.service';
@@ -35,22 +35,77 @@ export class KanbanComponent implements OnInit, OnDestroy {
   public lists: CategoryCardComponent[] = [];
   public columns: IColumn[] = [];
 
-  handleDrop({
+  handleDropInSameCategory({
     idxToStartReorderFrom,
     categoryIdx,
   }: {
     idxToStartReorderFrom: number;
     categoryIdx: number;
   }) {
-    const category = this.categories.value[categoryIdx];
     const items = this.columns[categoryIdx].tasks;
-    for (let i = idxToStartReorderFrom; i < items.length; i++) {
-      const item = items[i];
-      console.log(`item ${i} - order_id: ${i}`, item);
-      this.onSubmitUpdateTask({ ...item, order_id: i + 1 });
-    }
+    // for (let i = idxToStartReorderFrom; i < items.length; i++) {
+    //   const { id, item_id, ...body } = items[i];
+    //   this.itemService
+    //     .update(id, { ...body, order_id: i + 1 })
+    //     .pipe(takeUntil(this.unSub))
+    //     .subscribe();
+    // }
+
+    combineLatest(
+      items.slice(idxToStartReorderFrom).map((item, i) => {
+        const { id, item_id, ...body } = item;
+        return this.itemService.update(id, {
+          ...body,
+          order_id: i + 1,
+        });
+      })
+    )
+      .pipe(takeUntil(this.unSub))
+      .subscribe(() => this.boardService.init());
   }
 
+  handleDropInDifferentCategory({
+    item,
+    newCategoryId,
+    newCategoryIdx,
+    oldCategoryId,
+    prevIdx,
+    currIdx,
+  }) {
+    const { id, item_id, ...body } = item;
+    this.itemService
+      .update(id, {
+        ...body,
+        category_id: newCategoryId,
+        order_id: currIdx + 1,
+      })
+      .pipe(takeUntil(this.unSub))
+      .subscribe();
+
+    const newCategoryTasks = this.columns[newCategoryIdx].tasks;
+    const oldCategoryTasks =
+      this.columns.find((column) => column.category.id === oldCategoryId)
+        ?.tasks || [];
+
+    combineLatest([
+      ...newCategoryTasks.slice(currIdx).map((item, i) => {
+        const { id, item_id, ...body } = item;
+        return this.itemService.update(id, {
+          ...body,
+          order_id: i + currIdx + 1,
+        });
+      }),
+      ...oldCategoryTasks.slice(prevIdx).map((item, i) => {
+        const { id, item_id, ...body } = item;
+        return this.itemService.update(id, {
+          ...body,
+          order_id: i + prevIdx + 1,
+        });
+      }),
+    ])
+      .pipe(takeUntil(this.unSub))
+      .subscribe(() => this.boardService.init());
+  }
   // ! Drag and Drop End
 
   constructor(
@@ -131,6 +186,10 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
     this.categoryService.onCategoriesChange().subscribe((categories) => {
       this.categories.next(categories);
+      for (let i = 0; i < categories.length; i++) {
+        const { id, category_title } = categories[i];
+        console.log(`category_id: ${id} - category_title: ${category_title}`);
+      }
     });
   }
 

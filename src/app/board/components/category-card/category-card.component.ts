@@ -30,9 +30,17 @@ export class CategoryCardComponent implements OnInit {
     action: Actions;
     id: any;
   }>();
-  @Output() handleDropEvent = new EventEmitter<{
+  @Output() handleDropInSameCategory = new EventEmitter<{
     idxToStartReorderFrom: number;
     categoryIdx: number;
+  }>();
+  @Output() handleDropInDifferentCategory = new EventEmitter<{
+    item: IItem;
+    newCategoryId: string;
+    newCategoryIdx: number;
+    oldCategoryId: string;
+    prevIdx: number;
+    currIdx: number;
   }>();
 
   public categoryForm: FormGroup;
@@ -49,8 +57,7 @@ export class CategoryCardComponent implements OnInit {
 
   constructor() {}
 
-  drop(event: CdkDragDrop<IItem[]>, category?: ICategory) {
-    // console.log('event: ', event);
+  drop(event: CdkDragDrop<IItem[]>) {
     const item = event.item.data;
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -58,7 +65,7 @@ export class CategoryCardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
-      this.handleDropEvent.emit({
+      this.handleDropInSameCategory.emit({
         idxToStartReorderFrom: event.currentIndex,
         categoryIdx: this.index,
       });
@@ -69,9 +76,15 @@ export class CategoryCardComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
-      this.handleDropEvent.emit({
-        idxToStartReorderFrom: event.currentIndex,
-        categoryIdx: this.index,
+      const newCategoryId = this.category.id;
+      const oldCategoryId = item.category_id;
+      this.handleDropInDifferentCategory.emit({
+        item,
+        newCategoryId,
+        oldCategoryId,
+        newCategoryIdx: this.index,
+        prevIdx: event.previousIndex,
+        currIdx: event.currentIndex,
       });
     }
   }

@@ -1,5 +1,6 @@
 <div class="container">
-  <div class="list" cdkDropList [cdkDropListData]="tasks" (cdkDropListDropped)="drop($event, category)">
+  <!-- Pass Category data to each list -->
+  <div class="list" cdkDropList [cdkDropListData]="tasks" (cdkDropListDropped)="drop($event)">
     <div class="category-header">
       <h3>{{category.category_title}}</h3>
       <app-dot-menu [menuItems]="menuItems" (menuItemClick)="onCategoryMenuItemClick($event)"></app-dot-menu>
